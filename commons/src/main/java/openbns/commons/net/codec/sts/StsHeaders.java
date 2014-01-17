@@ -208,7 +208,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
         /**
          * {@code "Content-Length"}
          */
-        public static final String CONTENT_LENGTH = "Content-Length";
+        public static final String CONTENT_LENGTH = "l";
         /**
          * {@code "Content-Location"}
          */
