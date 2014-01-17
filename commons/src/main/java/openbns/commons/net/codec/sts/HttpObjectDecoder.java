@@ -403,7 +403,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
             //     - https://github.com/commons/commons/issues/222
             if (code >= 100 && code < 200) {
                 // One exception: Hixie 76 websocket handshake response
-                return !(code == 101 && !res.headers().contains(HttpHeaders.Names.SEC_WEBSOCKET_ACCEPT));
+                return !(code == 101 && !res.headers().contains( StsHeaders.Names.SEC_WEBSOCKET_ACCEPT));
             }
 
             switch (code) {
@@ -461,7 +461,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
     private State readHeaders(ByteBuf buffer) {
         headerSize = 0;
         final HttpMessage message = this.message;
-        final HttpHeaders headers = message.headers();
+        final StsHeaders headers = message.headers();
 
         AppendableCharSequence line = readHeader(buffer);
         String name = null;
@@ -493,9 +493,9 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
         State nextState;
 
         if (isContentAlwaysEmpty(message)) {
-            HttpHeaders.removeTransferEncodingChunked(message);
+            StsHeaders.removeTransferEncodingChunked( message );
             nextState = State.SKIP_CONTROL_CHARS;
-        } else if (HttpHeaders.isTransferEncodingChunked(message)) {
+        } else if ( StsHeaders.isTransferEncodingChunked( message )) {
             nextState = State.READ_CHUNK_SIZE;
         } else if (contentLength() >= 0) {
             nextState = State.READ_FIXED_LENGTH_CONTENT;
@@ -507,7 +507,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
 
     private long contentLength() {
         if (contentLength == Long.MIN_VALUE) {
-            contentLength = HttpHeaders.getContentLength(message, -1);
+            contentLength = StsHeaders.getContentLength( message, -1 );
         }
         return contentLength;
     }
@@ -532,9 +532,9 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
                 } else {
                     String[] header = splitHeader(line);
                     String name = header[0];
-                    if (!HttpHeaders.equalsIgnoreCase(name, HttpHeaders.Names.CONTENT_LENGTH) &&
-                        !HttpHeaders.equalsIgnoreCase(name, HttpHeaders.Names.TRANSFER_ENCODING) &&
-                        !HttpHeaders.equalsIgnoreCase(name, HttpHeaders.Names.TRAILER)) {
+                    if (!StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.CONTENT_LENGTH ) &&
+                        !StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.TRANSFER_ENCODING ) &&
+                        !StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.TRAILER )) {
                         trailer.trailingHeaders().add(name, header[1]);
                     }
                     lastHeader = name;

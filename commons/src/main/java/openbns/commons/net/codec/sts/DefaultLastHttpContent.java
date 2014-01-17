@@ -27,7 +27,7 @@ import java.util.Map;
 public class DefaultLastHttpContent extends DefaultHttpContent implements LastHttpContent
 {
 
-    private final HttpHeaders trailingHeaders;
+    private final StsHeaders trailingHeaders;
     private final boolean validateHeaders;
 
     public DefaultLastHttpContent() {
@@ -71,7 +71,7 @@ public class DefaultLastHttpContent extends DefaultHttpContent implements LastHt
     }
 
     @Override
-    public HttpHeaders trailingHeaders() {
+    public StsHeaders trailingHeaders() {
         return trailingHeaders;
     }
 
@@ -95,7 +95,7 @@ public class DefaultLastHttpContent extends DefaultHttpContent implements LastHt
         }
     }
 
-    private static final class TrailingHeaders extends DefaultHttpHeaders
+    private static final class TrailingHeaders extends DefaultStsHeaders
     {
         TrailingHeaders(boolean validate) {
             super(validate);
@@ -104,9 +104,9 @@ public class DefaultLastHttpContent extends DefaultHttpContent implements LastHt
         @Override
         void validateHeaderName0(CharSequence name) {
             super.validateHeaderName0(name);
-            if ( equalsIgnoreCase( HttpHeaders.Names.CONTENT_LENGTH, name ) ||
-                    equalsIgnoreCase( HttpHeaders.Names.TRANSFER_ENCODING, name ) ||
-                    equalsIgnoreCase( HttpHeaders.Names.TRAILER, name )) {
+            if ( equalsIgnoreCase( StsHeaders.Names.CONTENT_LENGTH, name ) ||
+                    equalsIgnoreCase( StsHeaders.Names.TRANSFER_ENCODING, name ) ||
+                    equalsIgnoreCase( StsHeaders.Names.TRAILER, name )) {
                 throw new IllegalArgumentException(
                         "prohibited trailing header: " + name);
             }

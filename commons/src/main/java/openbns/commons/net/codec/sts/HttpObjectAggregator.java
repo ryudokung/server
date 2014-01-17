@@ -113,7 +113,7 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
             HttpMessage m = (HttpMessage) msg;
 
             if (!m.getDecoderResult().isSuccess()) {
-                HttpHeaders.removeTransferEncodingChunked( m );
+                StsHeaders.removeTransferEncodingChunked( m );
                 this.currentMessage = null;
                 out.add(ReferenceCountUtil.retain(m));
                 return;
@@ -134,7 +134,7 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
             currentMessage.headers().set(m.headers());
 
             // A streamed message - initialize the cumulative buffer, and wait for incoming chunks.
-            HttpHeaders.removeTransferEncodingChunked( currentMessage );
+            StsHeaders.removeTransferEncodingChunked( currentMessage );
         } else if (msg instanceof HttpContent ) {
             if (tooLongFrameFound) {
                 if (msg instanceof LastHttpContent ) {
@@ -188,7 +188,7 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
 
                 // Set the 'Content-Length' header.
                 currentMessage.headers().set(
-                        HttpHeaders.Names.CONTENT_LENGTH,
+                        StsHeaders.Names.CONTENT_LENGTH,
                         String.valueOf(content.readableBytes()));
 
                 // All done

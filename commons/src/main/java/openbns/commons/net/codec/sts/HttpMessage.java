@@ -22,7 +22,7 @@ package openbns.commons.net.codec.sts;
  *
  * @see HttpResponse
  * @see HttpRequest
- * @see HttpHeaders
+ * @see StsHeaders
  */
 public interface HttpMessage extends HttpObject {
 
@@ -41,5 +41,5 @@ public interface HttpMessage extends HttpObject {
     /**
      * Returns the headers of this message.
      */
-    HttpHeaders headers();
+    StsHeaders headers();
 }

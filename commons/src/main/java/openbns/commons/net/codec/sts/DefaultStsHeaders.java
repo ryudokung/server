@@ -20,7 +20,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class DefaultHttpHeaders extends HttpHeaders {
+public class DefaultStsHeaders extends StsHeaders
+{
 
     private static final int BUCKET_SIZE = 17;
 
@@ -32,11 +33,11 @@ public class DefaultHttpHeaders extends HttpHeaders {
     private final HeaderEntry head = new HeaderEntry();
     protected final boolean validate;
 
-    public DefaultHttpHeaders() {
+    public DefaultStsHeaders() {
         this(true);
     }
 
-    public DefaultHttpHeaders(boolean validate) {
+    public DefaultStsHeaders( boolean validate ) {
         this.validate = validate;
         head.before = head.after = head;
     }
@@ -46,9 +47,9 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders add(HttpHeaders headers) {
-        if (headers instanceof DefaultHttpHeaders ) {
-            DefaultHttpHeaders defaultHttpHeaders = (DefaultHttpHeaders) headers;
+    public StsHeaders add(StsHeaders headers) {
+        if (headers instanceof DefaultStsHeaders ) {
+            DefaultStsHeaders defaultHttpHeaders = (DefaultStsHeaders) headers;
             HeaderEntry e = defaultHttpHeaders.head.after;
             while (e != defaultHttpHeaders.head) {
                 add(e.key, e.value);
@@ -61,10 +62,10 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders set(HttpHeaders headers) {
-        if (headers instanceof DefaultHttpHeaders ) {
+    public StsHeaders set(StsHeaders headers) {
+        if (headers instanceof DefaultStsHeaders ) {
             clear();
-            DefaultHttpHeaders defaultHttpHeaders = (DefaultHttpHeaders) headers;
+            DefaultStsHeaders defaultHttpHeaders = (DefaultStsHeaders) headers;
             HeaderEntry e = defaultHttpHeaders.head.after;
             while (e != defaultHttpHeaders.head) {
                 add(e.key, e.value);
@@ -77,12 +78,12 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders add(final String name, final Object value) {
+    public StsHeaders add(final String name, final Object value) {
         return add((CharSequence) name, value);
     }
 
     @Override
-    public HttpHeaders add(final CharSequence name, final Object value) {
+    public StsHeaders add(final CharSequence name, final Object value) {
         CharSequence strVal;
         if (validate) {
             validateHeaderName0(name);
@@ -98,12 +99,12 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders add(String name, Iterable<?> values) {
+    public StsHeaders add(String name, Iterable<?> values) {
         return add((CharSequence) name, values);
     }
 
     @Override
-    public HttpHeaders add(CharSequence name, Iterable<?> values) {
+    public StsHeaders add(CharSequence name, Iterable<?> values) {
         if (validate) {
             validateHeaderName0(name);
         }
@@ -131,12 +132,12 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders remove(final String name) {
+    public StsHeaders remove(final String name) {
         return remove((CharSequence) name);
     }
 
     @Override
-    public HttpHeaders remove(final CharSequence name) {
+    public StsHeaders remove(final CharSequence name) {
         if (name == null) {
             throw new NullPointerException("name");
         }
@@ -183,12 +184,12 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders set(final String name, final Object value) {
+    public StsHeaders set(final String name, final Object value) {
         return set((CharSequence) name, value);
     }
 
     @Override
-    public HttpHeaders set(final CharSequence name, final Object value) {
+    public StsHeaders set(final CharSequence name, final Object value) {
         CharSequence strVal;
         if (validate) {
             validateHeaderName0(name);
@@ -205,12 +206,12 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders set(final String name, final Iterable<?> values) {
+    public StsHeaders set(final String name, final Iterable<?> values) {
         return set((CharSequence) name, values);
     }
 
     @Override
-    public HttpHeaders set(final CharSequence name, final Iterable<?> values) {
+    public StsHeaders set(final CharSequence name, final Iterable<?> values) {
         if (values == null) {
             throw new NullPointerException("values");
         }
@@ -237,7 +238,7 @@ public class DefaultHttpHeaders extends HttpHeaders {
     }
 
     @Override
-    public HttpHeaders clear() {
+    public StsHeaders clear() {
         Arrays.fill(entries, null);
         head.before = head.after = head;
         return this;
@@ -483,7 +484,7 @@ public class DefaultHttpHeaders extends HttpHeaders {
         }
 
         void encode(ByteBuf buf) {
-            HttpHeaders.encode(key, value, buf);
+            StsHeaders.encode( key, value, buf );
         }
     }
 }

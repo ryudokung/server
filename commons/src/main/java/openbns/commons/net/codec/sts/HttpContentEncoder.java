@@ -69,9 +69,9 @@ public abstract class HttpContentEncoder extends MessageToMessageCodec<HttpReque
     @Override
     protected void decode(ChannelHandlerContext ctx, HttpRequest msg, List<Object> out)
             throws Exception {
-        String acceptedEncoding = msg.headers().get(HttpHeaders.Names.ACCEPT_ENCODING);
+        String acceptedEncoding = msg.headers().get( StsHeaders.Names.ACCEPT_ENCODING);
         if (acceptedEncoding == null) {
-            acceptedEncoding = HttpHeaders.Values.IDENTITY;
+            acceptedEncoding = StsHeaders.Values.IDENTITY;
         }
         acceptEncodingQueue.add(acceptedEncoding);
         out.add(ReferenceCountUtil.retain(msg));
@@ -131,11 +131,11 @@ public abstract class HttpContentEncoder extends MessageToMessageCodec<HttpReque
 
                 // Encode the content and remove or replace the existing headers
                 // so that the message looks like a decoded message.
-                res.headers().set( HttpHeaders.Names.CONTENT_ENCODING, result.targetContentEncoding());
+                res.headers().set( StsHeaders.Names.CONTENT_ENCODING, result.targetContentEncoding());
 
                 // Make the response chunked to simplify content transformation.
-                res.headers().remove( HttpHeaders.Names.CONTENT_LENGTH);
-                res.headers().set( HttpHeaders.Names.TRANSFER_ENCODING, HttpHeaders.Values.CHUNKED);
+                res.headers().remove( StsHeaders.Names.CONTENT_LENGTH);
+                res.headers().set( StsHeaders.Names.TRANSFER_ENCODING, StsHeaders.Values.CHUNKED);
 
                 // Output the rewritten response.
                 if (isFull) {
@@ -201,7 +201,7 @@ public abstract class HttpContentEncoder extends MessageToMessageCodec<HttpReque
 
             // Generate an additional chunk if the decoder produced
             // the last product on closure,
-            HttpHeaders headers = last.trailingHeaders();
+            StsHeaders headers = last.trailingHeaders();
             if (headers.isEmpty()) {
                 out.add(LastHttpContent.EMPTY_LAST_CONTENT);
             } else {

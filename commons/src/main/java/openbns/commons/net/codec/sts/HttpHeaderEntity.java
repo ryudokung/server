@@ -26,7 +26,7 @@ final class HttpHeaderEntity implements CharSequence {
 
     public HttpHeaderEntity(String name) {
         this.name = name;
-        hash = HttpHeaders.hash(name);
+        hash = StsHeaders.hash( name );
         bytes = name.getBytes(CharsetUtil.US_ASCII);
     }
 

@@ -261,7 +261,7 @@ public class StsVersion implements Comparable<StsVersion> {
 
     void encode(ByteBuf buf) {
         if (bytes == null) {
-            HttpHeaders.encodeAscii0(text, buf);
+            StsHeaders.encodeAscii0( text, buf );
         } else {
             buf.writeBytes(bytes);
         }

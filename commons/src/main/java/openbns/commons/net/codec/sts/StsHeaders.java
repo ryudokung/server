@@ -21,13 +21,13 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static io.netty.handler.codec.http.HttpConstants.*;
+import static openbns.commons.net.codec.sts.HttpConstants.*;
 
 /**
  * Provides the constants for the standard HTTP header names and values and
  * commonly used utility methods that accesses an {@link HttpMessage}.
  */
-public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
+public abstract class StsHeaders implements Iterable<Entry<String, String>> {
 
     private static final byte[] HEADER_SEPERATOR = { HttpConstants.COLON, HttpConstants.SP };
     private static final byte[] CRLF = { CR, LF };
@@ -46,7 +46,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
     private static final CharSequence SEC_WEBSOCKET_ORIGIN_ENTITY = newEntity( Names.SEC_WEBSOCKET_ORIGIN);
     private static final CharSequence SEC_WEBSOCKET_LOCATION_ENTITY = newEntity( Names.SEC_WEBSOCKET_LOCATION);
 
-    public static final HttpHeaders EMPTY_HEADERS = new HttpHeaders() {
+    public static final StsHeaders EMPTY_HEADERS = new StsHeaders() {
         @Override
         public String get(String name) {
             return null;
@@ -78,32 +78,32 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
         }
 
         @Override
-        public HttpHeaders add(String name, Object value) {
+        public StsHeaders add(String name, Object value) {
             throw new UnsupportedOperationException("read only");
         }
 
         @Override
-        public HttpHeaders add(String name, Iterable<?> values) {
+        public StsHeaders add(String name, Iterable<?> values) {
             throw new UnsupportedOperationException("read only");
         }
 
         @Override
-        public HttpHeaders set(String name, Object value) {
+        public StsHeaders set(String name, Object value) {
             throw new UnsupportedOperationException("read only");
         }
 
         @Override
-        public HttpHeaders set(String name, Iterable<?> values) {
+        public StsHeaders set(String name, Iterable<?> values) {
             throw new UnsupportedOperationException("read only");
         }
 
         @Override
-        public HttpHeaders remove(String name) {
+        public StsHeaders remove(String name) {
             throw new UnsupportedOperationException("read only");
         }
 
         @Override
-        public HttpHeaders clear() {
+        public StsHeaders clear() {
             throw new UnsupportedOperationException("read only");
         }
 
@@ -591,7 +591,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * </ul>
      */
     public static void setKeepAlive(HttpMessage message, boolean keepAlive) {
-        HttpHeaders h = message.headers();
+        StsHeaders h = message.headers();
         if (message.getProtocolVersion().isKeepAliveDefault()) {
             if (keepAlive) {
                 h.remove(CONNECTION_ENTITY);
@@ -629,7 +629,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @see {@link #getHeader(HttpMessage, CharSequence, String)}
      */
     public static String getHeader(HttpMessage message, String name, String defaultValue) {
-        return getHeader(message, (CharSequence) name, defaultValue);
+        return getHeader( message, (CharSequence) name, defaultValue );
     }
 
     /**
@@ -697,7 +697,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @see {@link #addHeader(HttpMessage, CharSequence, Object)}
      */
     public static void addHeader(HttpMessage message, String name, Object value) {
-        message.headers().add(name, value);
+        message.headers().add( name, value );
     }
 
     /**
@@ -708,21 +708,21 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>.
      */
     public static void addHeader(HttpMessage message, CharSequence name, Object value) {
-        message.headers().add(name, value);
+        message.headers().add( name, value );
     }
 
     /**
      * @see {@link #removeHeader(HttpMessage, CharSequence)}
      */
     public static void removeHeader(HttpMessage message, String name) {
-        message.headers().remove(name);
+        message.headers().remove( name );
     }
 
     /**
      * Removes the header with the specified name.
      */
     public static void removeHeader(HttpMessage message, CharSequence name) {
-        message.headers().remove(name);
+        message.headers().remove( name );
     }
 
     /**
@@ -819,14 +819,14 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @see {@link #addIntHeader(HttpMessage, CharSequence, int)}
      */
     public static void addIntHeader(HttpMessage message, String name, int value) {
-        message.headers().add(name, value);
+        message.headers().add( name, value );
     }
 
     /**
      * Adds a new integer header with the specified name and value.
      */
     public static void addIntHeader(HttpMessage message, CharSequence name, int value) {
-        message.headers().add(name, value);
+        message.headers().add( name, value );
     }
 
     /**
@@ -906,7 +906,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @see {@link #setDateHeader(HttpMessage, CharSequence, Iterable)}
      */
     public static void setDateHeader(HttpMessage message, String name, Iterable<Date> values) {
-        message.headers().set(name, values);
+        message.headers().set( name, values );
     }
 
     /**
@@ -923,7 +923,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @see {@link #addDateHeader(HttpMessage, CharSequence, java.util.Date)}
      */
     public static void addDateHeader(HttpMessage message, String name, Date value) {
-        message.headers().add(name, value);
+        message.headers().add( name, value );
     }
 
     /**
@@ -932,7 +932,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>
      */
     public static void addDateHeader(HttpMessage message, CharSequence name, Date value) {
-        message.headers().add(name, value);
+        message.headers().add( name, value );
     }
 
     /**
@@ -1001,7 +1001,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      */
     private static int getWebSocketContentLength(HttpMessage message) {
         // WebSockset messages have constant content-lengths.
-        HttpHeaders h = message.headers();
+        StsHeaders h = message.headers();
         if (message instanceof HttpRequest ) {
             HttpRequest req = (HttpRequest) message;
             if ( HttpMethod.GET.equals(req.getMethod()) &&
@@ -1293,9 +1293,9 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
         }
     }
 
-    static void encode(HttpHeaders headers, ByteBuf buf) {
-        if (headers instanceof DefaultHttpHeaders ) {
-            ((DefaultHttpHeaders) headers).encode(buf);
+    static void encode(StsHeaders headers, ByteBuf buf) {
+        if (headers instanceof DefaultStsHeaders ) {
+            ((DefaultStsHeaders) headers).encode(buf);
         } else {
             for (Entry<String, String> header: headers) {
                 encode(header.getKey(), header.getValue(), buf);
@@ -1326,7 +1326,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * Create a new {@link CharSequence} which is optimized for reuse as {@link HttpHeaders} name or value.
+     * Create a new {@link CharSequence} which is optimized for reuse as {@link StsHeaders} name or value.
      * So if you have a Header name or value that you want to reuse you should make use of this.
      */
     public static CharSequence newEntity(String name) {
@@ -1336,7 +1336,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
         return new HttpHeaderEntity(name);
     }
 
-    protected HttpHeaders() { }
+    protected StsHeaders() { }
 
     /**
      * @see {@link #get(CharSequence)}
@@ -1407,7 +1407,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
     /**
      * @see {@link #add(CharSequence, Object)}
      */
-    public abstract HttpHeaders add(String name, Object value);
+    public abstract StsHeaders add(String name, Object value);
 
     /**
      * Adds a new header with the specified name and value.
@@ -1422,14 +1422,14 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      *
      * @return {@code this}
      */
-    public HttpHeaders add(CharSequence name, Object value) {
+    public StsHeaders add(CharSequence name, Object value) {
         return add(name.toString(), value);
     }
 
     /**
      * @see {@link #add(CharSequence, Iterable)}
      */
-    public abstract HttpHeaders add(String name, Iterable<?> values);
+    public abstract StsHeaders add(String name, Iterable<?> values);
 
     /**
      * Adds a new header with the specified name and values.
@@ -1448,7 +1448,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @param values The values of the headers being set
      * @return {@code this}
      */
-    public HttpHeaders add(CharSequence name, Iterable<?> values) {
+    public StsHeaders add(CharSequence name, Iterable<?> values) {
         return add(name.toString(), values);
     }
 
@@ -1457,7 +1457,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      *
      * @return {@code this}
      */
-    public HttpHeaders add(HttpHeaders headers) {
+    public StsHeaders add(StsHeaders headers) {
         if (headers == null) {
             throw new NullPointerException("headers");
         }
@@ -1470,7 +1470,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
     /**
      * @see {@link #set(CharSequence, Object)}
      */
-    public abstract HttpHeaders set(String name, Object value);
+    public abstract StsHeaders set(String name, Object value);
 
     /**
      * Sets a header with the specified name and value.
@@ -1485,14 +1485,14 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @param value The value of the header being set
      * @return {@code this}
      */
-    public HttpHeaders set(CharSequence name, Object value) {
+    public StsHeaders set(CharSequence name, Object value) {
         return set(name.toString(), value);
     }
 
     /**
      * @see {@link #set(CharSequence, Iterable)}
      */
-    public abstract HttpHeaders set(String name, Iterable<?> values);
+    public abstract StsHeaders set(String name, Iterable<?> values);
 
     /**
      * Sets a header with the specified name and values.
@@ -1513,7 +1513,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @param values The values of the headers being set
      * @return {@code this}
      */
-    public HttpHeaders set(CharSequence name, Iterable<?> values) {
+    public StsHeaders set(CharSequence name, Iterable<?> values) {
         return set(name.toString(), values);
     }
 
@@ -1522,7 +1522,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      *
      * @return {@code this}
      */
-    public HttpHeaders set(HttpHeaders headers) {
+    public StsHeaders set(StsHeaders headers) {
         if (headers == null) {
             throw new NullPointerException("headers");
         }
@@ -1536,7 +1536,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
     /**
      * @see {@link #remove(CharSequence)}
      */
-    public abstract HttpHeaders remove(String name);
+    public abstract StsHeaders remove(String name);
 
     /**
      * Removes the header with the specified name.
@@ -1544,7 +1544,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      * @param name The name of the header to remove
      * @return {@code this}
      */
-    public HttpHeaders remove(CharSequence name) {
+    public StsHeaders remove(CharSequence name) {
         return remove(name.toString());
     }
 
@@ -1553,7 +1553,7 @@ public abstract class HttpHeaders implements Iterable<Entry<String, String>> {
      *
      * @return {@code this}
      */
-    public abstract HttpHeaders clear();
+    public abstract StsHeaders clear();
 
     /**
      * @see {@link #contains(CharSequence, CharSequence, boolean)}

@@ -83,34 +83,34 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
             if (!decodeStarted) {
                 decodeStarted = true;
                 HttpMessage message = this.message;
-                HttpHeaders headers = message.headers();
+                StsHeaders headers = message.headers();
                 this.message = null;
 
                 // Determine the content encoding.
-                String contentEncoding = headers.get(HttpHeaders.Names.CONTENT_ENCODING);
+                String contentEncoding = headers.get( StsHeaders.Names.CONTENT_ENCODING);
                 if (contentEncoding != null) {
                     contentEncoding = contentEncoding.trim();
                 } else {
-                    contentEncoding = HttpHeaders.Values.IDENTITY;
+                    contentEncoding = StsHeaders.Values.IDENTITY;
                 }
 
                 if ((decoder = newContentDecoder(contentEncoding)) != null) {
                     // Decode the content and remove or replace the existing headers
                     // so that the message looks like a decoded message.
                     String targetContentEncoding = getTargetContentEncoding(contentEncoding);
-                    if (HttpHeaders.Values.IDENTITY.equals(targetContentEncoding)) {
+                    if ( StsHeaders.Values.IDENTITY.equals(targetContentEncoding)) {
                         // Do NOT set the 'Content-Encoding' header if the target encoding is 'identity'
                         // as per: sts://tools.ietf.org/html/rfc2616#section-14.11
-                        headers.remove(HttpHeaders.Names.CONTENT_ENCODING);
+                        headers.remove( StsHeaders.Names.CONTENT_ENCODING);
                     } else {
-                        headers.set(HttpHeaders.Names.CONTENT_ENCODING, targetContentEncoding);
+                        headers.set( StsHeaders.Names.CONTENT_ENCODING, targetContentEncoding);
                     }
 
                     out.add(message);
                     decodeContent(c, out);
 
                     // Replace the content length.
-                    if (headers.contains(HttpHeaders.Names.CONTENT_LENGTH)) {
+                    if (headers.contains( StsHeaders.Names.CONTENT_LENGTH)) {
                         int contentLength = 0;
                         int size = out.size();
                         for (int i = 0; i < size; i++) {
@@ -120,7 +120,7 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
                             }
                         }
                         headers.set(
-                                HttpHeaders.Names.CONTENT_LENGTH,
+                                StsHeaders.Names.CONTENT_LENGTH,
                                 Integer.toString(contentLength));
                     }
                     return;
@@ -156,7 +156,7 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
             LastHttpContent last = (LastHttpContent) c;
             // Generate an additional chunk if the decoder produced
             // the last product on closure,
-            HttpHeaders headers = last.trailingHeaders();
+            StsHeaders headers = last.trailingHeaders();
             if (headers.isEmpty()) {
                 out.add( LastHttpContent.EMPTY_LAST_CONTENT);
             } else {
@@ -186,7 +186,7 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
      */
     @SuppressWarnings("unused")
     protected String getTargetContentEncoding(String contentEncoding) throws Exception {
-        return HttpHeaders.Values.IDENTITY;
+        return StsHeaders.Values.IDENTITY;
     }
 
     @Override

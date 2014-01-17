@@ -46,8 +46,8 @@ public interface LastHttpContent extends HttpContent
         }
 
         @Override
-        public HttpHeaders trailingHeaders() {
-            return HttpHeaders.EMPTY_HEADERS;
+        public StsHeaders trailingHeaders() {
+            return StsHeaders.EMPTY_HEADERS;
         }
 
         @Override
@@ -86,7 +86,7 @@ public interface LastHttpContent extends HttpContent
         }
     };
 
-    HttpHeaders trailingHeaders();
+    StsHeaders trailingHeaders();
 
     @Override
     LastHttpContent copy();

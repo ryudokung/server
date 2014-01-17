@@ -24,7 +24,7 @@ import io.netty.buffer.Unpooled;
 public class DefaultFullStsRequest extends DefaultStsRequest implements FullHttpRequest
 {
     private final ByteBuf content;
-    private final HttpHeaders trailingHeader;
+    private final StsHeaders trailingHeader;
     private final boolean validateHeaders;
 
     public DefaultFullStsRequest( StsVersion stsVersion, HttpMethod method, String uri ) {
@@ -42,12 +42,12 @@ public class DefaultFullStsRequest extends DefaultStsRequest implements FullHttp
             throw new NullPointerException("content");
         }
         this.content = content;
-        trailingHeader = new DefaultHttpHeaders(validateHeaders);
+        trailingHeader = new DefaultStsHeaders(validateHeaders);
         this.validateHeaders = validateHeaders;
     }
 
     @Override
-    public HttpHeaders trailingHeaders() {
+    public StsHeaders trailingHeaders() {
         return trailingHeader;
     }
 

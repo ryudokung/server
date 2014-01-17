@@ -26,7 +26,7 @@ public abstract class DefaultHttpMessage extends DefaultHttpObject implements Ht
 {
 
     private StsVersion version;
-    private final HttpHeaders headers;
+    private final StsHeaders headers;
 
     /**
      * Creates a new instance.
@@ -40,11 +40,11 @@ public abstract class DefaultHttpMessage extends DefaultHttpObject implements Ht
             throw new NullPointerException("version");
         }
         this.version = version;
-        headers = new DefaultHttpHeaders(validate);
+        headers = new DefaultStsHeaders(validate);
     }
 
     @Override
-    public HttpHeaders headers() {
+    public StsHeaders headers() {
         return headers;
     }
 
@@ -60,7 +60,7 @@ public abstract class DefaultHttpMessage extends DefaultHttpObject implements Ht
         buf.append("(version: ");
         buf.append(getProtocolVersion().text());
         buf.append(", keepAlive: ");
-        buf.append(HttpHeaders.isKeepAlive(this));
+        buf.append( StsHeaders.isKeepAlive( this ));
         buf.append(')');
         buf.append(StringUtil.NEWLINE);
         appendHeaders(buf);

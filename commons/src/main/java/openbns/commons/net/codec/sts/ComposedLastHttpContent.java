@@ -21,14 +21,14 @@ import io.netty.handler.codec.DecoderResult;
 
 final class ComposedLastHttpContent implements LastHttpContent
 {
-    private final HttpHeaders trailingHeaders;
+    private final StsHeaders trailingHeaders;
     private DecoderResult result;
 
-    ComposedLastHttpContent(HttpHeaders trailingHeaders) {
+    ComposedLastHttpContent(StsHeaders trailingHeaders) {
         this.trailingHeaders = trailingHeaders;
     }
     @Override
-    public HttpHeaders trailingHeaders() {
+    public StsHeaders trailingHeaders() {
         return trailingHeaders;
     }
 

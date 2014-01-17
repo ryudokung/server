@@ -25,7 +25,7 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullHt
 {
 
     private final ByteBuf content;
-    private final HttpHeaders trailingHeaders;
+    private final StsHeaders trailingHeaders;
     private final boolean validateHeaders;
 
     public DefaultFullStsResponse( StsVersion version, StsResponseStatus status ) {
@@ -43,12 +43,12 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullHt
             throw new NullPointerException("content");
         }
         this.content = content;
-        trailingHeaders = new DefaultHttpHeaders(validateHeaders);
+        trailingHeaders = new DefaultStsHeaders(validateHeaders);
         this.validateHeaders = validateHeaders;
     }
 
     @Override
-    public HttpHeaders trailingHeaders() {
+    public StsHeaders trailingHeaders() {
         return trailingHeaders;
     }
 

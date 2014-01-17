@@ -542,9 +542,9 @@ public class StsResponseStatus implements Comparable<StsResponseStatus> {
 
     void encode(ByteBuf buf) {
         if (bytes == null) {
-            HttpHeaders.encodeAscii0( String.valueOf( code() ), buf );
+            StsHeaders.encodeAscii0( String.valueOf( code() ), buf );
             buf.writeByte(SP);
-            HttpHeaders.encodeAscii0( String.valueOf( reasonPhrase() ), buf );
+            StsHeaders.encodeAscii0( String.valueOf( reasonPhrase() ), buf );
         } else {
             buf.writeBytes(bytes);
         }

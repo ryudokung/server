@@ -69,9 +69,9 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
             buf = ctx.alloc().buffer();
             // Encode the message.
             encodeInitialLine(buf, m);
-            HttpHeaders.encode( m.headers(), buf );
+            StsHeaders.encode( m.headers(), buf );
             buf.writeBytes(CRLF);
-            state = HttpHeaders.isTransferEncodingChunked( m ) ? ST_CONTENT_CHUNK : ST_CONTENT_NON_CHUNK;
+            state = StsHeaders.isTransferEncodingChunked( m ) ? ST_CONTENT_CHUNK : ST_CONTENT_NON_CHUNK;
         }
         if (msg instanceof HttpContent || msg instanceof ByteBuf || msg instanceof FileRegion) {
             if (state == ST_INIT) {
@@ -131,13 +131,13 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
         }
 
         if (msg instanceof LastHttpContent ) {
-            HttpHeaders headers = ((LastHttpContent) msg).trailingHeaders();
+            StsHeaders headers = ((LastHttpContent) msg).trailingHeaders();
             if (headers.isEmpty()) {
                 out.add(ZERO_CRLF_CRLF_BUF.duplicate());
             } else {
                 ByteBuf buf = ctx.alloc().buffer();
                 buf.writeBytes(ZERO_CRLF);
-                HttpHeaders.encode( headers, buf );
+                StsHeaders.encode( headers, buf );
                 buf.writeBytes(CRLF);
                 out.add(buf);
             }
@@ -185,7 +185,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
 
     @Deprecated
     protected static void encodeAscii(String s, ByteBuf buf) {
-        HttpHeaders.encodeAscii0( s, buf );
+        StsHeaders.encodeAscii0( s, buf );
     }
 
     protected abstract void encodeInitialLine(ByteBuf buf, H message) throws Exception;
