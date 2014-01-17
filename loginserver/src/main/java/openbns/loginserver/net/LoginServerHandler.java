@@ -2,9 +2,13 @@ package openbns.loginserver.net;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.http.DefaultHttpRequest;
+import openbns.commons.net.codec.sts.DefaultStsResponse;
+import openbns.commons.net.codec.sts.DefaultStsRequest;
+import openbns.commons.net.codec.sts.StsResponseStatus;
+import openbns.commons.net.codec.sts.StsVersion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,16 +23,25 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   @Override
   public void channelRead( ChannelHandlerContext ctx, Object msg ) throws Exception
   {
-    if( msg instanceof DefaultHttpRequest )
+    if( msg instanceof DefaultStsRequest )
     {
-      DefaultHttpRequest req = (DefaultHttpRequest) msg;
-      log.debug( req );
+      DefaultStsRequest req = (DefaultStsRequest) msg;
+
+
+      String method = req.getMethod().name();
+      switch( method )
+      {
+        case "/Sts/Connect":
+          System.out.println( "Client request conenct" );
+          DefaultStsResponse response = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK);
+          break;
+      }
 //      if( is100ContinueExpected( req ) )
 //      {
-//        ctx.write( new DefaultFullHttpResponse( HTTP_1_1, CONTINUE ) );
+//        ctx.write( new DefaultFullStsResponse( HTTP_1_1, CONTINUE ) );
 //      }
 //      boolean keepAlive = isKeepAlive( req );
-//      FullHttpResponse response = new DefaultFullHttpResponse( HTTP_1_1, OK, Unpooled.wrappedBuffer( "Hello world".getBytes() ) );
+//      FullHttpResponse response = new DefaultFullStsResponse( HTTP_1_1, OK, Unpooled.wrappedBuffer( "Hello world".getBytes() ) );
 //      response.headers().set( CONTENT_TYPE, "text/plain" );
 //      response.headers().set( CONTENT_LENGTH, response.content().readableBytes() );
 //

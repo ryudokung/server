@@ -3,7 +3,7 @@ package openbns.loginserver.net;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpServerCodec;
+import openbns.commons.net.codec.sts.StsServerCodec;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +17,7 @@ public class LoginServerInitializer extends ChannelInitializer<SocketChannel>
   protected void initChannel( SocketChannel ch ) throws Exception
   {
     ChannelPipeline p = ch.pipeline();
-    p.addLast( "codec", new HttpServerCodec() );
+    p.addLast( "codec", new StsServerCodec() );
     p.addLast( "handler", new LoginServerHandler() );
   }
 }
