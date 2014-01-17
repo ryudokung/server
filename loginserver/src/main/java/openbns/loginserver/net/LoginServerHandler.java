@@ -1,11 +1,9 @@
 package openbns.loginserver.net;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import openbns.commons.net.codec.sts.DefaultStsRequest;
-import openbns.commons.net.codec.sts.DefaultStsResponse;
-import openbns.commons.net.codec.sts.StsResponseStatus;
-import openbns.commons.net.codec.sts.StsVersion;
+import openbns.commons.net.codec.sts.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,12 +33,32 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
           ctx.write( response );
           break;
         case "/Sts/Ping":
-          // TODO:
+          ctx.write( new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK ) );
           break;
         case "/Auth/LoginStart":
           // TODO:
           break;
+        case "/Auth/KeyData":
+          // TODO:
+          break;
+        default:
+          log.warn( "No handler available for request " + method );
+          ctx.close();
+          break;
       }
+    }
+    else if( msg instanceof LastHttpContent )
+    {
+      LastHttpContent content = (LastHttpContent) msg;
+      ByteBuf buffer = content.content();
+
+      StringBuilder builder = new StringBuilder();
+
+      while( buffer.isReadable() )
+      {
+        builder.append( (char) buffer.readByte() );
+      }
+      log.info( builder.toString() );
     }
   }
 
