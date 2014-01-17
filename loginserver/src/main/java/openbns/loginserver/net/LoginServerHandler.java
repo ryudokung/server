@@ -24,8 +24,8 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
     {
       DefaultStsRequest req = (DefaultStsRequest) msg;
 
-      String method = req.getMethod().name();
-      switch( method )
+      String uri = req.getUri();
+      switch( uri )
       {
         case "/Sts/Connect":
           System.out.println( "Client request conenct" );
@@ -42,7 +42,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
           // TODO:
           break;
         default:
-          log.warn( "No handler available for request " + method );
+          log.warn( "No handler available for request " + uri );
           ctx.close();
           break;
       }
