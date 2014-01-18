@@ -21,7 +21,6 @@ import io.netty.channel.CombinedChannelDuplexHandler;
  * A combination of {@link StsRequestDecoder} and {@link StsResponseEncoder}
  * which enables easier server side HTTP implementation.
  *
- * @see HttpClientCodec
  */
 public final class StsServerCodec
         extends CombinedChannelDuplexHandler<StsRequestDecoder, StsResponseEncoder> {
