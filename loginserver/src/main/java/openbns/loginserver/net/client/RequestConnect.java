@@ -1,4 +1,6 @@
-package openbns.loginserver.model;
+package openbns.loginserver.net.client;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Created with IntelliJ IDEA.
@@ -6,7 +8,8 @@ package openbns.loginserver.model;
  * Date: 17.01.14
  * Time: 22:48
  */
-public class Connect
+@XStreamAlias( "Connect" )
+public class RequestConnect
 {
   private int connType;
   private String address;

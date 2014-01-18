@@ -34,17 +34,12 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     private static final CharSequence CONTENT_LENGTH_ENTITY = newEntity( Names.CONTENT_LENGTH);
     private static final CharSequence CONNECTION_ENTITY = newEntity( Names.CONNECTION);
     private static final CharSequence CLOSE_ENTITY = newEntity( Values.CLOSE);
-    private static final CharSequence KEEP_ALIVE_ENTITY = newEntity( Values.KEEP_ALIVE);
     private static final CharSequence HOST_ENTITY = newEntity( Names.HOST);
     private static final CharSequence DATE_ENTITY = newEntity( Names.DATE);
     private static final CharSequence EXPECT_ENTITY = newEntity( Names.EXPECT);
     private static final CharSequence CONTINUE_ENTITY = newEntity( Values.CONTINUE);
     private static final CharSequence TRANSFER_ENCODING_ENTITY = newEntity( Names.TRANSFER_ENCODING);
     private static final CharSequence CHUNKED_ENTITY = newEntity( Values.CHUNKED);
-    private static final CharSequence SEC_WEBSOCKET_KEY1_ENTITY = newEntity( Names.SEC_WEBSOCKET_KEY1);
-    private static final CharSequence SEC_WEBSOCKET_KEY2_ENTITY = newEntity( Names.SEC_WEBSOCKET_KEY2);
-    private static final CharSequence SEC_WEBSOCKET_ORIGIN_ENTITY = newEntity( Names.SEC_WEBSOCKET_ORIGIN);
-    private static final CharSequence SEC_WEBSOCKET_LOCATION_ENTITY = newEntity( Names.SEC_WEBSOCKET_LOCATION);
 
     public static final StsHeaders EMPTY_HEADERS = new StsHeaders() {
         @Override
@@ -317,38 +312,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
          * {@code "Retry-After"}
          */
         public static final String RETRY_AFTER = "Retry-After";
-        /**
-         * {@code "Sec-WebSocket-Key1"}
-         */
-        public static final String SEC_WEBSOCKET_KEY1 = "Sec-WebSocket-Key1";
-        /**
-         * {@code "Sec-WebSocket-Key2"}
-         */
-        public static final String SEC_WEBSOCKET_KEY2 = "Sec-WebSocket-Key2";
-        /**
-         * {@code "Sec-WebSocket-Location"}
-         */
-        public static final String SEC_WEBSOCKET_LOCATION = "Sec-WebSocket-Location";
-        /**
-         * {@code "Sec-WebSocket-Origin"}
-         */
-        public static final String SEC_WEBSOCKET_ORIGIN = "Sec-WebSocket-Origin";
-        /**
-         * {@code "Sec-WebSocket-Protocol"}
-         */
-        public static final String SEC_WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
-        /**
-         * {@code "Sec-WebSocket-Version"}
-         */
-        public static final String SEC_WEBSOCKET_VERSION = "Sec-WebSocket-Version";
-        /**
-         * {@code "Sec-WebSocket-Key"}
-         */
-        public static final String SEC_WEBSOCKET_KEY = "Sec-WebSocket-Key";
-        /**
-         * {@code "Sec-WebSocket-Accept"}
-         */
-        public static final String SEC_WEBSOCKET_ACCEPT = "Sec-WebSocket-Accept";
+
         /**
          * {@code "Server"}
          */
@@ -552,62 +516,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
         }
     }
 
-    /**
-     * Returns {@code true} if and only if the connection can remain open and
-     * thus 'kept alive'.  This methods respects the value of the
-     * {@code "Connection"} header first and then the return value of
-     * {@link StsVersion#isKeepAliveDefault()}.
-     */
-    public static boolean isKeepAlive(HttpMessage message) {
-        String connection = message.headers().get(CONNECTION_ENTITY);
-        if (connection != null && equalsIgnoreCase(CLOSE_ENTITY, connection)) {
-            return false;
-        }
-
-        if (message.getProtocolVersion().isKeepAliveDefault()) {
-            return !equalsIgnoreCase(CLOSE_ENTITY, connection);
-        } else {
-            return equalsIgnoreCase(KEEP_ALIVE_ENTITY, connection);
-        }
-    }
-
-    /**
-     * Sets the value of the {@code "Connection"} header depending on the
-     * protocol version of the specified message.  This getMethod sets or removes
-     * the {@code "Connection"} header depending on what the default keep alive
-     * mode of the message's protocol version is, as specified by
-     * {@link StsVersion#isKeepAliveDefault()}.
-     * <ul>
-     * <li>If the connection is kept alive by default:
-     *     <ul>
-     *     <li>set to {@code "close"} if {@code keepAlive} is {@code false}.</li>
-     *     <li>remove otherwise.</li>
-     *     </ul></li>
-     * <li>If the connection is closed by default:
-     *     <ul>
-     *     <li>set to {@code "keep-alive"} if {@code keepAlive} is {@code true}.</li>
-     *     <li>remove otherwise.</li>
-     *     </ul></li>
-     * </ul>
-     */
-    public static void setKeepAlive(HttpMessage message, boolean keepAlive) {
-        StsHeaders h = message.headers();
-        if (message.getProtocolVersion().isKeepAliveDefault()) {
-            if (keepAlive) {
-                h.remove(CONNECTION_ENTITY);
-            } else {
-                h.set(CONNECTION_ENTITY, CLOSE_ENTITY);
-            }
-        } else {
-            if (keepAlive) {
-                h.set(CONNECTION_ENTITY, KEEP_ALIVE_ENTITY);
-            } else {
-                h.remove(CONNECTION_ENTITY);
-            }
-        }
-    }
-
-    /**
+  /**
      * @see {@link #getHeader(HttpMessage, CharSequence)}
      */
     public static String getHeader(HttpMessage message, String name) {
@@ -953,13 +862,6 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
             return Long.parseLong(value);
         }
 
-        // We know the content length if it's a Web Socket message even if
-        // Content-Length header is missing.
-        long webSocketContentLength = getWebSocketContentLength(message);
-        if (webSocketContentLength >= 0) {
-            return webSocketContentLength;
-        }
-
         // Otherwise we don't.
         throw new NumberFormatException("header not found: " + Names.CONTENT_LENGTH);
     }
@@ -984,45 +886,11 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
             }
         }
 
-        // We know the content length if it's a Web Socket message even if
-        // Content-Length header is missing.
-        long webSocketContentLength = getWebSocketContentLength(message);
-        if (webSocketContentLength >= 0) {
-            return webSocketContentLength;
-        }
-
         // Otherwise we don't.
         return defaultValue;
     }
 
-    /**
-     * Returns the content length of the specified web socket message.  If the
-     * specified message is not a web socket message, {@code -1} is returned.
-     */
-    private static int getWebSocketContentLength(HttpMessage message) {
-        // WebSockset messages have constant content-lengths.
-        StsHeaders h = message.headers();
-        if (message instanceof HttpRequest ) {
-            HttpRequest req = (HttpRequest) message;
-            if ( HttpMethod.GET.equals(req.getMethod()) &&
-                h.contains(SEC_WEBSOCKET_KEY1_ENTITY) &&
-                h.contains(SEC_WEBSOCKET_KEY2_ENTITY)) {
-                return 8;
-            }
-        } else if (message instanceof HttpResponse) {
-            HttpResponse res = (HttpResponse) message;
-            if (res.getStatus().code() == 101 &&
-                h.contains(SEC_WEBSOCKET_ORIGIN_ENTITY) &&
-                h.contains(SEC_WEBSOCKET_LOCATION_ENTITY)) {
-                return 16;
-            }
-        }
-
-        // Not a web socket message
-        return -1;
-    }
-
-    /**
+  /**
      * Sets the {@code "Content-Length"} header.
      */
     public static void setContentLength(HttpMessage message, long length) {

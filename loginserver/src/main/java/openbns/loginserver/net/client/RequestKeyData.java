@@ -1,4 +1,6 @@
-package openbns.loginserver.model;
+package openbns.loginserver.net.client;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Created with IntelliJ IDEA.
@@ -6,6 +8,7 @@ package openbns.loginserver.model;
  * Date: 17.01.14
  * Time: 23:03
  */
+@XStreamAlias( "Request" )
 public class RequestKeyData
 {
   private String keyData;
