@@ -5,8 +5,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.http.DefaultLastHttpContent;
 import openbns.commons.net.codec.sts.*;
+import openbns.commons.xml.StsXStream;
 import openbns.loginserver.net.server.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +22,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   private static final Log log = LogFactory.getLog( LoginServerHandler.class );
   private String lastURI;
   private String keyData;
+  private int session;
 
   // TODO: REFACTOR ALL. ITS ONLY FOR TESTING
   @Override
@@ -32,6 +33,10 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
       DefaultStsRequest req = (DefaultStsRequest) msg;
       lastURI = req.getUri();
       log.info( "Receive request from client. Method: " + req.getMethod() + "; URI: " + req.getUri() );
+
+      String s = req.headers().get( "s" );
+      if( s != null )
+        session = Integer.parseInt( s );
     }
     else if( msg instanceof LastStsContent )
     {
@@ -55,19 +60,17 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
           ctx.write( new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK ) );
           break;
         case "/Auth/LoginStart":
-          XStream stream = new XStream();
+          StsXStream stream = new StsXStream();
           stream.processAnnotations( ReplyKeyData.class );
 
           ReplyKeyData replyKeyData = new ReplyKeyData();
           replyKeyData.setKeyData( "CAAAAECCFuuwk9gFgAAAAPPz8eAzBs/V/75tRz0caaVJQxHWuC7qfyWvHA+nZMQP1MyHNE1UpLfpf6vUJl3dGfGsethsrufh/3xQ/gDi0ISMOG4sPF49k1tIg5hR9RrqTHdyLYWAb5OZWarjZcrmAPP6JGMBqRS4HQvVwJaJpiSrF/SJN7bX+IchUgIYN5Bg" );
 
-          String s = stream.toXML( replyKeyData );
-          byte[] b = s.getBytes();
+          byte[] b = stream.toXML( replyKeyData ).getBytes();
 
           DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK );
-          resp.headers().set( StsHeaders.Names.CONTENT_LENGTH, b.length );
-          resp.headers().set( "s", "7R" );
-
+          resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
+          resp.headers().add( "s", session + "R" );
           ctx.writeAndFlush( resp );
           ctx.writeAndFlush( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
           break;

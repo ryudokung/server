@@ -76,8 +76,7 @@ public abstract class HttpObjectEncoder<H extends StsMessage> extends MessageToM
         }
         if (msg instanceof StsContent || msg instanceof ByteBuf || msg instanceof FileRegion) {
             if (state == ST_INIT) {
-              System.out.println( "unexpected message type:" + StringUtil.simpleClassName(msg) );
-//                throw new IllegalStateException("unexpected message type: " + StringUtil.simpleClassName(msg));
+                throw new IllegalStateException("unexpected message type: " + StringUtil.simpleClassName(msg));
             }
 
             int contentLength = contentLength(msg);
