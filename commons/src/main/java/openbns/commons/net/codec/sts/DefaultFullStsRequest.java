@@ -19,23 +19,23 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * Default implementation of {@link FullHttpRequest}.
+ * Default implementation of {@link FullStsRequest}.
  */
-public class DefaultFullStsRequest extends DefaultStsRequest implements FullHttpRequest
+public class DefaultFullStsRequest extends DefaultStsRequest implements FullStsRequest
 {
     private final ByteBuf content;
     private final StsHeaders trailingHeader;
     private final boolean validateHeaders;
 
-    public DefaultFullStsRequest( StsVersion stsVersion, HttpMethod method, String uri ) {
+    public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri ) {
         this( stsVersion, method, uri, Unpooled.buffer(0));
     }
 
-    public DefaultFullStsRequest( StsVersion stsVersion, HttpMethod method, String uri, ByteBuf content ) {
+    public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri, ByteBuf content ) {
         this( stsVersion, method, uri, content, true);
     }
 
-    public DefaultFullStsRequest( StsVersion stsVersion, HttpMethod method, String uri, ByteBuf content,
+    public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri, ByteBuf content,
                                   boolean validateHeaders ) {
         super( stsVersion, method, uri, validateHeaders);
         if (content == null) {
@@ -62,13 +62,13 @@ public class DefaultFullStsRequest extends DefaultStsRequest implements FullHttp
     }
 
     @Override
-    public FullHttpRequest retain() {
+    public FullStsRequest retain() {
         content.retain();
         return this;
     }
 
     @Override
-    public FullHttpRequest retain(int increment) {
+    public FullStsRequest retain(int increment) {
         content.retain(increment);
         return this;
     }
@@ -84,25 +84,25 @@ public class DefaultFullStsRequest extends DefaultStsRequest implements FullHttp
     }
 
     @Override
-    public FullHttpRequest setProtocolVersion(StsVersion version) {
+    public FullStsRequest setProtocolVersion(StsVersion version) {
         super.setProtocolVersion(version);
         return this;
     }
 
     @Override
-    public FullHttpRequest setMethod(HttpMethod method) {
+    public FullStsRequest setMethod(StsMethod method) {
         super.setMethod(method);
         return this;
     }
 
     @Override
-    public FullHttpRequest setUri(String uri) {
+    public FullStsRequest setUri(String uri) {
         super.setUri(uri);
         return this;
     }
 
     @Override
-    public FullHttpRequest copy() {
+    public FullStsRequest copy() {
         DefaultFullStsRequest copy = new DefaultFullStsRequest(
                 getProtocolVersion(), getMethod(), getUri(), content().copy(), validateHeaders);
         copy.headers().set(headers());
@@ -111,7 +111,7 @@ public class DefaultFullStsRequest extends DefaultStsRequest implements FullHttp
     }
 
     @Override
-    public FullHttpRequest duplicate() {
+    public FullStsRequest duplicate() {
         DefaultFullStsRequest duplicate = new DefaultFullStsRequest(
                 getProtocolVersion(), getMethod(), getUri(), content().duplicate(), validateHeaders);
         duplicate.headers().set(headers());

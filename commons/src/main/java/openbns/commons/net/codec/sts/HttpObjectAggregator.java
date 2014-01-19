@@ -26,9 +26,9 @@ import io.netty.util.ReferenceCountUtil;
 import java.util.List;
 
 /**
- * A {@link io.netty.channel.ChannelHandler} that aggregates an {@link HttpMessage}
- * and its following {@link HttpContent}s into a single {@link HttpMessage} with
- * no following {@link HttpContent}s.  It is useful when you don't want to take
+ * A {@link io.netty.channel.ChannelHandler} that aggregates an {@link StsMessage}
+ * and its following {@link StsContent}s into a single {@link StsMessage} with
+ * no following {@link StsContent}s.  It is useful when you don't want to take
  * care of HTTP messages whose transfer encoding is 'chunked'.  Insert this
  * handler after {@link HttpObjectDecoder} in the {@link io.netty.channel.ChannelPipeline}:
  * <pre>
@@ -41,13 +41,13 @@ import java.util.List;
  * p.addLast("handler", new HttpRequestHandler());
  * </pre>
  */
-public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
+public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject> {
     public static final int DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS = 1024;
-    private static final FullHttpResponse CONTINUE =
+    private static final FullStsResponse CONTINUE =
             new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.CONTINUE, Unpooled.EMPTY_BUFFER);
 
     private final int maxContentLength;
-    private FullHttpMessage currentMessage;
+    private FullStsMessage currentMessage;
     private boolean tooLongFrameFound;
 
     private int maxCumulationBufferComponents = DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS;
@@ -103,14 +103,14 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
     }
 
     @Override
-    protected void decode(final ChannelHandlerContext ctx, HttpObject msg, List<Object> out) throws Exception {
-        FullHttpMessage currentMessage = this.currentMessage;
+    protected void decode(final ChannelHandlerContext ctx, StsObject msg, List<Object> out) throws Exception {
+        FullStsMessage currentMessage = this.currentMessage;
 
-        if (msg instanceof HttpMessage) {
+        if (msg instanceof StsMessage ) {
             tooLongFrameFound = false;
             assert currentMessage == null;
 
-            HttpMessage m = (HttpMessage) msg;
+            StsMessage m = (StsMessage) msg;
 
             if (!m.getDecoderResult().isSuccess()) {
                 StsHeaders.removeTransferEncodingChunked( m );
@@ -118,12 +118,12 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
                 out.add(ReferenceCountUtil.retain(m));
                 return;
             }
-            if (msg instanceof HttpRequest) {
-                HttpRequest header = (HttpRequest) msg;
+            if (msg instanceof StsRequest ) {
+                StsRequest header = (StsRequest) msg;
                 this.currentMessage = currentMessage = new DefaultFullStsRequest(header.getProtocolVersion(),
                         header.getMethod(), header.getUri(), Unpooled.compositeBuffer(maxCumulationBufferComponents));
-            } else if (msg instanceof HttpResponse) {
-                HttpResponse header = (HttpResponse) msg;
+            } else if (msg instanceof StsResponse ) {
+                StsResponse header = (StsResponse) msg;
                 this.currentMessage = currentMessage = new DefaultFullStsResponse(
                         header.getProtocolVersion(), header.getStatus(),
                         Unpooled.compositeBuffer(maxCumulationBufferComponents));
@@ -135,9 +135,9 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
 
             // A streamed message - initialize the cumulative buffer, and wait for incoming chunks.
             StsHeaders.removeTransferEncodingChunked( currentMessage );
-        } else if (msg instanceof HttpContent ) {
+        } else if (msg instanceof StsContent ) {
             if (tooLongFrameFound) {
-                if (msg instanceof LastHttpContent ) {
+                if (msg instanceof LastStsContent ) {
                     this.currentMessage = null;
                 }
                 // already detect the too long frame so just discard the content
@@ -146,7 +146,7 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
             assert currentMessage != null;
 
             // Merge the received chunk into the content of the current message.
-            HttpContent chunk = (HttpContent) msg;
+            StsContent chunk = (StsContent) msg;
             CompositeByteBuf content = (CompositeByteBuf) currentMessage.content();
 
             if (content.readableBytes() > maxContentLength - chunk.content().readableBytes()) {
@@ -174,15 +174,15 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<HttpObject> {
                         DecoderResult.failure(chunk.getDecoderResult().cause()));
                 last = true;
             } else {
-                last = chunk instanceof LastHttpContent;
+                last = chunk instanceof LastStsContent;
             }
 
             if (last) {
                 this.currentMessage = null;
 
                 // Merge trailing headers into the message.
-                if (chunk instanceof LastHttpContent ) {
-                    LastHttpContent trailer = (LastHttpContent) chunk;
+                if (chunk instanceof LastStsContent ) {
+                    LastStsContent trailer = (LastStsContent) chunk;
                     currentMessage.headers().add(trailer.trailingHeaders());
                 }
 

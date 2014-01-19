@@ -17,25 +17,16 @@ package openbns.commons.net.codec.sts;
 
 import io.netty.handler.codec.DecoderResult;
 
-public class DefaultHttpObject implements HttpObject
+public interface StsObject
 {
+    /**
+     * Returns the result of decoding this message.
+     */
+    DecoderResult getDecoderResult();
 
-    private DecoderResult decoderResult = DecoderResult.SUCCESS;
-
-    protected DefaultHttpObject() {
-        // Disallow direct instantiation
-    }
-
-    @Override
-    public DecoderResult getDecoderResult() {
-        return decoderResult;
-    }
-
-    @Override
-    public void setDecoderResult(DecoderResult decoderResult) {
-        if (decoderResult == null) {
-            throw new NullPointerException("decoderResult");
-        }
-        this.decoderResult = decoderResult;
-    }
+    /**
+     * Updates the result of decoding this message. This method is supposed to be invoked by {@link HttpObjectDecoder}.
+     * Do not call this method unless you know what you are doing.
+     */
+    void setDecoderResult( DecoderResult result );
 }

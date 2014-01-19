@@ -19,12 +19,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.DecoderResult;
 
-final class ComposedLastHttpContent implements LastHttpContent
+final class ComposedLastStsContent implements LastStsContent
 {
     private final StsHeaders trailingHeaders;
     private DecoderResult result;
 
-    ComposedLastHttpContent(StsHeaders trailingHeaders) {
+    ComposedLastStsContent( StsHeaders trailingHeaders ) {
         this.trailingHeaders = trailingHeaders;
     }
     @Override
@@ -33,24 +33,24 @@ final class ComposedLastHttpContent implements LastHttpContent
     }
 
     @Override
-    public LastHttpContent copy() {
-        LastHttpContent content = new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER);
+    public LastStsContent copy() {
+        LastStsContent content = new DefaultLastStsContent(Unpooled.EMPTY_BUFFER);
         content.trailingHeaders().set(trailingHeaders());
         return content;
     }
 
     @Override
-    public LastHttpContent retain(int increment) {
+    public LastStsContent retain(int increment) {
         return this;
     }
 
     @Override
-    public LastHttpContent retain() {
+    public LastStsContent retain() {
         return this;
     }
 
     @Override
-    public HttpContent duplicate() {
+    public StsContent duplicate() {
         return copy();
     }
 

@@ -19,16 +19,17 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 
 /**
- * The default {@link HttpContent} implementation.
+ * The default {@link StsContent} implementation.
  */
-public class DefaultHttpContent extends DefaultHttpObject implements HttpContent {
+public class DefaultStsContent extends DefaultStsObject implements StsContent
+{
 
     private final ByteBuf content;
 
     /**
      * Creates a new instance with the specified chunk content.
      */
-    public DefaultHttpContent(ByteBuf content) {
+    public DefaultStsContent( ByteBuf content ) {
         if (content == null) {
             throw new NullPointerException("content");
         }
@@ -41,13 +42,13 @@ public class DefaultHttpContent extends DefaultHttpObject implements HttpContent
     }
 
     @Override
-    public HttpContent copy() {
-        return new DefaultHttpContent(content.copy());
+    public StsContent copy() {
+        return new DefaultStsContent(content.copy());
     }
 
     @Override
-    public HttpContent duplicate() {
-        return new DefaultHttpContent(content.duplicate());
+    public StsContent duplicate() {
+        return new DefaultStsContent(content.duplicate());
     }
 
     @Override
@@ -56,13 +57,13 @@ public class DefaultHttpContent extends DefaultHttpObject implements HttpContent
     }
 
     @Override
-    public HttpContent retain() {
+    public StsContent retain() {
         content.retain();
         return this;
     }
 
     @Override
-    public HttpContent retain(int increment) {
+    public StsContent retain(int increment) {
         content.retain(increment);
         return this;
     }

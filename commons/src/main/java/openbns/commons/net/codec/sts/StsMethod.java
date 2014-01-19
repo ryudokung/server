@@ -26,7 +26,7 @@ import java.util.Map;
  * <a href="sts://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol">RTSP</a> and
  * <a href="sts://en.wikipedia.org/wiki/Internet_Content_Adaptation_Protocol">ICAP</a>.
  */
-public class HttpMethod implements Comparable<HttpMethod> {
+public class StsMethod implements Comparable<StsMethod> {
     /**
      * The OPTIONS getMethod represents a request for information about the communication options
      * available on the request/response chain identified by the Request-URI. This getMethod allows
@@ -34,7 +34,7 @@ public class HttpMethod implements Comparable<HttpMethod> {
      * capabilities of a server, without implying a resource action or initiating a resource
      * retrieval.
      */
-    public static final HttpMethod OPTIONS = new HttpMethod("OPTIONS", true);
+    public static final StsMethod OPTIONS = new StsMethod("OPTIONS", true);
 
     /**
      * The GET getMethod means retrieve whatever information (in the form of an entity) is identified
@@ -42,52 +42,52 @@ public class HttpMethod implements Comparable<HttpMethod> {
      * produced data which shall be returned as the entity in the response and not the source text
      * of the process, unless that text happens to be the output of the process.
      */
-    public static final HttpMethod GET = new HttpMethod("GET", true);
+    public static final StsMethod GET = new StsMethod("GET", true);
 
     /**
      * The HEAD getMethod is identical to GET except that the server MUST NOT return a message-body
      * in the response.
      */
-    public static final HttpMethod HEAD = new HttpMethod("HEAD", true);
+    public static final StsMethod HEAD = new StsMethod("HEAD", true);
 
     /**
      * The POST getMethod is used to request that the origin server accept the entity enclosed in the
      * request as a new subordinate of the resource identified by the Request-URI in the
      * Request-Line.
      */
-    public static final HttpMethod POST = new HttpMethod("POST", true);
+    public static final StsMethod POST = new StsMethod("POST", true);
 
     /**
      * The PUT getMethod requests that the enclosed entity be stored under the supplied Request-URI.
      */
-    public static final HttpMethod PUT = new HttpMethod("PUT", true);
+    public static final StsMethod PUT = new StsMethod("PUT", true);
 
     /**
      * The PATCH getMethod requests that a set of changes described in the
      * request entity be applied to the resource identified by the Request-URI.
      */
-    public static final HttpMethod PATCH = new HttpMethod("PATCH", true);
+    public static final StsMethod PATCH = new StsMethod("PATCH", true);
 
     /**
      * The DELETE getMethod requests that the origin server delete the resource identified by the
      * Request-URI.
      */
-    public static final HttpMethod DELETE = new HttpMethod("DELETE", true);
+    public static final StsMethod DELETE = new StsMethod("DELETE", true);
 
     /**
      * The TRACE getMethod is used to invoke a remote, application-layer loop- back of the request
      * message.
      */
-    public static final HttpMethod TRACE = new HttpMethod("TRACE", true);
+    public static final StsMethod TRACE = new StsMethod("TRACE", true);
 
     /**
      * This specification reserves the getMethod name CONNECT for use with a proxy that can dynamically
      * switch to being a tunnel
      */
-    public static final HttpMethod CONNECT = new HttpMethod("CONNECT", true);
+    public static final StsMethod CONNECT = new StsMethod("CONNECT", true);
 
-    private static final Map<String, HttpMethod> methodMap =
-            new HashMap<String, HttpMethod>();
+    private static final Map<String, StsMethod> methodMap =
+            new HashMap<String, StsMethod>();
 
     static {
         methodMap.put(OPTIONS.toString(), OPTIONS);
@@ -102,11 +102,11 @@ public class HttpMethod implements Comparable<HttpMethod> {
     }
 
     /**
-     * Returns the {@link HttpMethod} represented by the specified name.
+     * Returns the {@link StsMethod} represented by the specified name.
      * If the specified name is a standard HTTP getMethod name, a cached instance
      * will be returned.  Otherwise, a new instance will be returned.
      */
-    public static HttpMethod valueOf(String name) {
+    public static StsMethod valueOf(String name) {
         if (name == null) {
             throw new NullPointerException("name");
         }
@@ -116,11 +116,11 @@ public class HttpMethod implements Comparable<HttpMethod> {
             throw new IllegalArgumentException("empty name");
         }
 
-        HttpMethod result = methodMap.get(name);
+        StsMethod result = methodMap.get(name);
         if (result != null) {
             return result;
         } else {
-            return new HttpMethod(name);
+            return new StsMethod(name);
         }
     }
 
@@ -134,11 +134,11 @@ public class HttpMethod implements Comparable<HttpMethod> {
      * <a href="sts://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol">RTSP</a> and
      * <a href="sts://en.wikipedia.org/wiki/Internet_Content_Adaptation_Protocol">ICAP</a>
      */
-    public HttpMethod(String name) {
+    public StsMethod( String name ) {
         this(name, false);
     }
 
-    private HttpMethod(String name, boolean bytes) {
+    private StsMethod( String name, boolean bytes ) {
         if (name == null) {
             throw new NullPointerException("name");
         }
@@ -177,11 +177,11 @@ public class HttpMethod implements Comparable<HttpMethod> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof HttpMethod)) {
+        if (!(o instanceof StsMethod)) {
             return false;
         }
 
-        HttpMethod that = (HttpMethod) o;
+        StsMethod that = (StsMethod) o;
         return name().equals(that.name());
     }
 
@@ -191,7 +191,7 @@ public class HttpMethod implements Comparable<HttpMethod> {
     }
 
     @Override
-    public int compareTo(HttpMethod o) {
+    public int compareTo(StsMethod o) {
         return name().compareTo(o.name());
     }
 

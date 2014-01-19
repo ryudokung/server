@@ -15,31 +15,27 @@
  */
 package openbns.commons.net.codec.sts;
 
+import io.netty.handler.codec.DecoderResult;
 
-/**
- * An interface that defines a HTTP message, providing common properties for
- * {@link HttpRequest} and {@link HttpResponse}.
- *
- * @see HttpResponse
- * @see HttpRequest
- * @see StsHeaders
- */
-public interface HttpMessage extends HttpObject {
+public class DefaultStsObject implements StsObject
+{
 
-    /**
-     * Returns the protocol version of this {@link HttpMessage}
-     *
-     * @return The protocol version
-     */
-    StsVersion getProtocolVersion();
+    private DecoderResult decoderResult = DecoderResult.SUCCESS;
 
-    /**
-     * Set the protocol version of this {@link HttpMessage}
-     */
-    HttpMessage setProtocolVersion( StsVersion version );
+    protected DefaultStsObject() {
+        // Disallow direct instantiation
+    }
 
-    /**
-     * Returns the headers of this message.
-     */
-    StsHeaders headers();
+    @Override
+    public DecoderResult getDecoderResult() {
+        return decoderResult;
+    }
+
+    @Override
+    public void setDecoderResult(DecoderResult decoderResult) {
+        if (decoderResult == null) {
+            throw new NullPointerException("decoderResult");
+        }
+        this.decoderResult = decoderResult;
+    }
 }

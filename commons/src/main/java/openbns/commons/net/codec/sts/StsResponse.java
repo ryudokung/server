@@ -24,26 +24,25 @@ package openbns.commons.net.codec.sts;
  * Unlike the Servlet API, {@link Cookie} support is provided separately via {@link CookieDecoder},
  * {@link ClientCookieEncoder}, and {@link ServerCookieEncoder}.
  *
- * @see HttpRequest
+ * @see StsRequest
  * @see CookieDecoder
- * @see ClientCookieEncoder
  * @see ServerCookieEncoder
  */
-public interface HttpResponse extends HttpMessage
+public interface StsResponse extends StsMessage
 {
 
     /**
-     * Returns the status of this {@link HttpResponse}.
+     * Returns the status of this {@link StsResponse}.
      *
-     * @return The {@link StsResponseStatus} of this {@link HttpResponse}
+     * @return The {@link StsResponseStatus} of this {@link StsResponse}
      */
     StsResponseStatus getStatus();
 
     /**
-     * Set the status of this {@link HttpResponse}.
+     * Set the status of this {@link StsResponse}.
      */
-    HttpResponse setStatus( StsResponseStatus status );
+    StsResponse setStatus( StsResponseStatus status );
 
     @Override
-    HttpResponse setProtocolVersion( StsVersion version );
+    StsResponse setProtocolVersion( StsVersion version );
 }

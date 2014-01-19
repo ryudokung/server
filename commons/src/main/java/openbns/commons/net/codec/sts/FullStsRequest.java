@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 The Netty Project
+ * Copyright 2013 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -15,17 +15,27 @@
  */
 package openbns.commons.net.codec.sts;
 
-import io.netty.handler.codec.DecoderResult;
+/**
+ * Combinate the {@link StsRequest} and {@link FullStsMessage}, so the request is a <i>complete</i> HTTP
+ * request.
+ */
+public interface FullStsRequest extends StsRequest, FullStsMessage
+{
+    @Override
+    FullStsRequest copy();
 
-public interface HttpObject {
-    /**
-     * Returns the result of decoding this message.
-     */
-    DecoderResult getDecoderResult();
+    @Override
+    FullStsRequest retain( int increment );
 
-    /**
-     * Updates the result of decoding this message. This method is supposed to be invoked by {@link HttpObjectDecoder}.
-     * Do not call this method unless you know what you are doing.
-     */
-    void setDecoderResult( DecoderResult result );
+    @Override
+    FullStsRequest retain();
+
+    @Override
+    FullStsRequest setProtocolVersion( StsVersion version );
+
+    @Override
+    FullStsRequest setMethod( StsMethod method );
+
+    @Override
+    FullStsRequest setUri( String uri );
 }

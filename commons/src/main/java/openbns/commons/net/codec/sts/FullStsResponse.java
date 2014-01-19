@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 The Netty Project
+ * Copyright 2013 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -15,30 +15,24 @@
  */
 package openbns.commons.net.codec.sts;
 
-final class CookieHeaderNames {
-    static final String PATH = "Path";
+/**
+ * Combination of a {@link StsResponse} and {@link FullStsMessage}.
+ * So it represent a <i>complete</i> sts response.
+ */
+public interface FullStsResponse extends StsResponse, FullStsMessage
+{
+    @Override
+    FullStsResponse copy();
 
-    static final String EXPIRES = "Expires";
+    @Override
+    FullStsResponse retain( int increment );
 
-    static final String MAX_AGE = "Max-Age";
+    @Override
+    FullStsResponse retain();
 
-    static final String DOMAIN = "Domain";
+    @Override
+    FullStsResponse setProtocolVersion( StsVersion version );
 
-    static final String SECURE = "Secure";
-
-    static final String HTTPONLY = "HTTPOnly";
-
-    static final String COMMENT = "Comment";
-
-    static final String COMMENTURL = "CommentURL";
-
-    static final String DISCARD = "Discard";
-
-    static final String PORT = "Port";
-
-    static final String VERSION = "Version";
-
-    private CookieHeaderNames() {
-        // Unused.
-    }
+    @Override
+    FullStsResponse setStatus( StsResponseStatus status );
 }

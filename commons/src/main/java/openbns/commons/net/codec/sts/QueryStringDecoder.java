@@ -63,7 +63,7 @@ public class QueryStringDecoder {
      * assume that the query string is encoded in UTF-8.
      */
     public QueryStringDecoder(String uri) {
-        this(uri, HttpConstants.DEFAULT_CHARSET);
+        this(uri, StsConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -71,7 +71,7 @@ public class QueryStringDecoder {
      * specified charset.
      */
     public QueryStringDecoder(String uri, boolean hasPath) {
-        this(uri, HttpConstants.DEFAULT_CHARSET, hasPath);
+        this(uri, StsConstants.DEFAULT_CHARSET, hasPath);
     }
 
     /**
@@ -117,7 +117,7 @@ public class QueryStringDecoder {
      * assume that the query string is encoded in UTF-8.
      */
     public QueryStringDecoder(URI uri) {
-        this(uri, HttpConstants.DEFAULT_CHARSET);
+        this(uri, StsConstants.DEFAULT_CHARSET);
     }
 
     /**
@@ -269,7 +269,7 @@ public class QueryStringDecoder {
      * escape sequence.
      */
     public static String decodeComponent(final String s) {
-        return decodeComponent(s, HttpConstants.DEFAULT_CHARSET);
+        return decodeComponent(s, StsConstants.DEFAULT_CHARSET);
     }
 
     /**

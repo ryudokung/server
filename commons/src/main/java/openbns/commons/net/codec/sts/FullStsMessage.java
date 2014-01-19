@@ -16,25 +16,17 @@
 package openbns.commons.net.codec.sts;
 
 /**
- * Combinate the {@link HttpRequest} and {@link FullHttpMessage}, so the request is a <i>complete</i> HTTP
- * request.
+ * Combines {@link StsMessage} and {@link LastStsContent} into one
+ * message. So it represent a <i>complete</i> sts message.
  */
-public interface FullHttpRequest extends HttpRequest, FullHttpMessage {
+public interface FullStsMessage extends StsMessage, LastStsContent
+{
     @Override
-    FullHttpRequest copy();
+    FullStsMessage copy();
 
     @Override
-    FullHttpRequest retain( int increment );
+    FullStsMessage retain( int increment );
 
     @Override
-    FullHttpRequest retain();
-
-    @Override
-    FullHttpRequest setProtocolVersion( StsVersion version );
-
-    @Override
-    FullHttpRequest setMethod( HttpMethod method );
-
-    @Override
-    FullHttpRequest setUri( String uri );
+    FullStsMessage retain();
 }

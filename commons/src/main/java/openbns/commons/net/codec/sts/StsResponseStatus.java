@@ -18,7 +18,7 @@ package openbns.commons.net.codec.sts;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 
-import static openbns.commons.net.codec.sts.HttpConstants.SP;
+import static openbns.commons.net.codec.sts.StsConstants.SP;
 
 /**
  * The response code and its description of HTTP or its derived protocols, such as

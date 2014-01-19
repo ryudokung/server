@@ -19,9 +19,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * Default implementation of a {@link FullHttpResponse}.
+ * Default implementation of a {@link FullStsResponse}.
  */
-public class DefaultFullStsResponse extends DefaultStsResponse implements FullHttpResponse
+public class DefaultFullStsResponse extends DefaultStsResponse implements FullStsResponse
 {
 
     private final ByteBuf content;
@@ -63,13 +63,13 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullHt
     }
 
     @Override
-    public FullHttpResponse retain() {
+    public FullStsResponse retain() {
         content.retain();
         return this;
     }
 
     @Override
-    public FullHttpResponse retain(int increment) {
+    public FullStsResponse retain(int increment) {
         content.retain(increment);
         return this;
     }
@@ -85,19 +85,19 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullHt
     }
 
     @Override
-    public FullHttpResponse setProtocolVersion(StsVersion version) {
+    public FullStsResponse setProtocolVersion(StsVersion version) {
         super.setProtocolVersion(version);
         return this;
     }
 
     @Override
-    public FullHttpResponse setStatus(StsResponseStatus status) {
+    public FullStsResponse setStatus(StsResponseStatus status) {
         super.setStatus(status);
         return this;
     }
 
     @Override
-    public FullHttpResponse copy() {
+    public FullStsResponse copy() {
         DefaultFullStsResponse copy = new DefaultFullStsResponse(
                 getProtocolVersion(), getStatus(), content().copy(), validateHeaders);
         copy.headers().set(headers());
@@ -106,7 +106,7 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullHt
     }
 
     @Override
-    public FullHttpResponse duplicate() {
+    public FullStsResponse duplicate() {
         DefaultFullStsResponse duplicate = new DefaultFullStsResponse(getProtocolVersion(), getStatus(),
                 content().duplicate(), validateHeaders);
         duplicate.headers().set(headers());

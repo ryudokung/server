@@ -20,15 +20,15 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.DecoderResult;
 
 /**
- * The last {@link HttpContent} which has trailing headers.
+ * The last {@link StsContent} which has trailing headers.
  */
-public interface LastHttpContent extends HttpContent
+public interface LastStsContent extends StsContent
 {
 
     /**
      * The 'end of content' marker in chunked encoding.
      */
-    LastHttpContent EMPTY_LAST_CONTENT = new LastHttpContent() {
+    LastStsContent EMPTY_LAST_CONTENT = new LastStsContent() {
 
         @Override
         public ByteBuf content() {
@@ -36,12 +36,12 @@ public interface LastHttpContent extends HttpContent
         }
 
         @Override
-        public LastHttpContent copy() {
+        public LastStsContent copy() {
             return EMPTY_LAST_CONTENT;
         }
 
         @Override
-        public LastHttpContent duplicate() {
+        public LastStsContent duplicate() {
             return this;
         }
 
@@ -66,12 +66,12 @@ public interface LastHttpContent extends HttpContent
         }
 
         @Override
-        public LastHttpContent retain() {
+        public LastStsContent retain() {
             return this;
         }
 
         @Override
-        public LastHttpContent retain(int increment) {
+        public LastStsContent retain(int increment) {
             return this;
         }
 
@@ -89,11 +89,11 @@ public interface LastHttpContent extends HttpContent
     StsHeaders trailingHeaders();
 
     @Override
-    LastHttpContent copy();
+    LastStsContent copy();
 
     @Override
-    LastHttpContent retain( int increment );
+    LastStsContent retain( int increment );
 
     @Override
-    LastHttpContent retain();
+    LastStsContent retain();
 }

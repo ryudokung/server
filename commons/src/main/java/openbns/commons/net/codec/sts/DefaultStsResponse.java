@@ -18,9 +18,10 @@ package openbns.commons.net.codec.sts;
 import io.netty.util.internal.StringUtil;
 
 /**
- * The default {@link HttpResponse} implementation.
+ * The default {@link StsResponse} implementation.
  */
-public class DefaultStsResponse extends DefaultHttpMessage implements HttpResponse {
+public class DefaultStsResponse extends DefaultStsMessage implements StsResponse
+{
 
     private StsResponseStatus status;
 
@@ -55,7 +56,7 @@ public class DefaultStsResponse extends DefaultHttpMessage implements HttpRespon
     }
 
     @Override
-    public HttpResponse setStatus(StsResponseStatus status) {
+    public StsResponse setStatus(StsResponseStatus status) {
         if (status == null) {
             throw new NullPointerException("status");
         }
@@ -64,7 +65,7 @@ public class DefaultStsResponse extends DefaultHttpMessage implements HttpRespon
     }
 
     @Override
-    public HttpResponse setProtocolVersion(StsVersion version) {
+    public StsResponse setProtocolVersion(StsVersion version) {
         super.setProtocolVersion(version);
         return this;
     }

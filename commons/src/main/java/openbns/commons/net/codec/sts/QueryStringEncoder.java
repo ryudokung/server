@@ -46,7 +46,7 @@ public class QueryStringEncoder {
      * path string.  The encoder will encode the URI in UTF-8.
      */
     public QueryStringEncoder(String uri) {
-        this(uri, HttpConstants.DEFAULT_CHARSET);
+        this(uri, StsConstants.DEFAULT_CHARSET);
     }
 
     /**

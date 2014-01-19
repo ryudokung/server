@@ -20,9 +20,9 @@ import io.netty.util.internal.StringUtil;
 import java.util.Map;
 
 /**
- * The default {@link HttpMessage} implementation.
+ * The default {@link StsMessage} implementation.
  */
-public abstract class DefaultHttpMessage extends DefaultHttpObject implements HttpMessage
+public abstract class DefaultStsMessage extends DefaultStsObject implements StsMessage
 {
 
     private StsVersion version;
@@ -31,11 +31,11 @@ public abstract class DefaultHttpMessage extends DefaultHttpObject implements Ht
     /**
      * Creates a new instance.
      */
-    protected DefaultHttpMessage(final StsVersion version) {
+    protected DefaultStsMessage( final StsVersion version ) {
         this(version, true);
     }
 
-    protected DefaultHttpMessage(final StsVersion version, boolean validate) {
+    protected DefaultStsMessage( final StsVersion version, boolean validate ) {
         if (version == null) {
             throw new NullPointerException("version");
         }
@@ -69,7 +69,7 @@ public abstract class DefaultHttpMessage extends DefaultHttpObject implements Ht
     }
 
     @Override
-    public HttpMessage setProtocolVersion(StsVersion version) {
+    public StsMessage setProtocolVersion(StsVersion version) {
         if (version == null) {
             throw new NullPointerException("version");
         }

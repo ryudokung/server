@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
 import openbns.commons.net.codec.sts.*;
 import openbns.loginserver.net.server.ReplyKeyData;
 import org.apache.commons.logging.Log;
@@ -32,18 +33,18 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
       lastURI = req.getUri();
       log.info( "Receive request from client. Method: " + req.getMethod() + "; URI: " + req.getUri() );
     }
-    else if( msg instanceof LastHttpContent )
+    else if( msg instanceof LastStsContent )
     {
-      LastHttpContent content = (LastHttpContent) msg;
+      LastStsContent content = (LastStsContent) msg;
       ByteBuf buffer = content.content();
 
-      StringBuilder builder = new StringBuilder();
-
-      while( buffer.isReadable() )
-      {
-        builder.append( (char) buffer.readByte() );
-      }
-      log.debug( builder.toString() );
+//      StringBuilder builder = new StringBuilder();
+//
+//      while( buffer.isReadable() )
+//      {
+//        builder.append( (char) buffer.readByte() );
+//      }
+//      log.debug( builder.toString() );
 
       switch( lastURI )
       {
@@ -54,26 +55,23 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
           ctx.write( new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK ) );
           break;
         case "/Auth/LoginStart":
-
           XStream stream = new XStream();
           stream.processAnnotations( ReplyKeyData.class );
 
           ReplyKeyData replyKeyData = new ReplyKeyData();
           replyKeyData.setKeyData( "CAAAAECCFuuwk9gFgAAAAPPz8eAzBs/V/75tRz0caaVJQxHWuC7qfyWvHA+nZMQP1MyHNE1UpLfpf6vUJl3dGfGsethsrufh/3xQ/gDi0ISMOG4sPF49k1tIg5hR9RrqTHdyLYWAb5OZWarjZcrmAPP6JGMBqRS4HQvVwJaJpiSrF/SJN7bX+IchUgIYN5Bg" );
 
-          String s = stream.toXML( replyKeyData ).replaceAll( " ", "" );
+          String s = stream.toXML( replyKeyData );
           byte[] b = s.getBytes();
 
-          DefaultFullStsResponse resp = new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK, Unpooled.wrappedBuffer( b ) );
+          DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK );
           resp.headers().set( StsHeaders.Names.CONTENT_LENGTH, b.length );
           resp.headers().set( "s", "7R" );
 
-          ctx.write( resp );
-
-          // TODO:
+          ctx.writeAndFlush( resp );
+          ctx.writeAndFlush( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
           break;
         case "/Auth/KeyData":
-          // TODO:
           break;
         default:
           log.warn( "No handler available for request " + lastURI );
@@ -94,5 +92,12 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   {
     log.error( "LoginServerHandler: Exception!!!", cause );
     ctx.close();
+  }
+
+  @Override
+  public void channelRegistered( ChannelHandlerContext ctx ) throws Exception
+  {
+    log.debug( "Accepted new channel" );
+    super.channelRegistered( ctx );
   }
 }

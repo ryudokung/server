@@ -16,7 +16,7 @@
 package openbns.commons.net.codec.sts;
 
 /**
- * Decodes {@link io.netty.buffer.ByteBuf}s into {@link HttpRequest}s and {@link HttpContent}s.
+ * Decodes {@link io.netty.buffer.ByteBuf}s into {@link StsRequest}s and {@link StsContent}s.
  *
  * <h3>Parameters that prevents excessive memory consumption</h3>
  * <table border="1">
@@ -39,10 +39,10 @@ package openbns.commons.net.codec.sts;
  * <td>The maximum length of the content or each chunk.  If the content length
  *     exceeds this value, the transfer encoding of the decoded request will be
  *     converted to 'chunked' and the content will be split into multiple
- *     {@link HttpContent}s.  If the transfer encoding of the HTTP request is
+ *     {@link StsContent}s.  If the transfer encoding of the HTTP request is
  *     'chunked' already, each chunk will be split into smaller chunks if the
  *     length of the chunk exceeds this value.  If you prefer not to handle
- *     {@link HttpContent}s in your handler, insert {@link HttpObjectAggregator}
+ *     {@link StsContent}s in your handler, insert {@link HttpObjectAggregator}
  *     after this decoder in the {@link io.netty.channel.ChannelPipeline}.</td>
  * </tr>
  * </table>
@@ -69,15 +69,15 @@ public class StsRequestDecoder extends HttpObjectDecoder {
     }
 
     @Override
-    protected HttpMessage createMessage(String[] initialLine) throws Exception {
+    protected StsMessage createMessage(String[] initialLine) throws Exception {
         return new DefaultStsRequest(
                 StsVersion.valueOf( initialLine[ 2 ] ),
-                HttpMethod.valueOf(initialLine[0]), initialLine[1], validateHeaders);
+                StsMethod.valueOf( initialLine[ 0 ] ), initialLine[1], validateHeaders);
     }
 
     @Override
-    protected HttpMessage createInvalidMessage() {
-        return new DefaultStsRequest( StsVersion.STS_1_0, HttpMethod.GET, "/bad-request", validateHeaders);
+    protected StsMessage createInvalidMessage() {
+        return new DefaultStsRequest( StsVersion.STS_1_0, StsMethod.GET, "/bad-request", validateHeaders);
     }
 
     @Override

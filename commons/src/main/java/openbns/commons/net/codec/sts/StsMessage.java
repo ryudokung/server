@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Netty Project
+ * Copyright 2012 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -15,18 +15,32 @@
  */
 package openbns.commons.net.codec.sts;
 
+
 /**
- * Combines {@link HttpMessage} and {@link LastHttpContent} into one
- * message. So it represent a <i>complete</i> sts message.
+ * An interface that defines a HTTP message, providing common properties for
+ * {@link StsRequest} and {@link StsResponse}.
+ *
+ * @see StsResponse
+ * @see StsRequest
+ * @see StsHeaders
  */
-public interface FullHttpMessage extends HttpMessage, LastHttpContent
+public interface StsMessage extends StsObject
 {
-    @Override
-    FullHttpMessage copy();
 
-    @Override
-    FullHttpMessage retain( int increment );
+    /**
+     * Returns the protocol version of this {@link StsMessage}
+     *
+     * @return The protocol version
+     */
+    StsVersion getProtocolVersion();
 
-    @Override
-    FullHttpMessage retain();
+    /**
+     * Set the protocol version of this {@link StsMessage}
+     */
+    StsMessage setProtocolVersion( StsVersion version );
+
+    /**
+     * Returns the headers of this message.
+     */
+    StsHeaders headers();
 }

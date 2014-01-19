@@ -19,7 +19,8 @@ import io.netty.util.CharsetUtil;
 
 import java.nio.charset.Charset;
 
-public final class HttpConstants {
+public final class StsConstants
+{
 
     /**
      * Horizontal space
@@ -71,7 +72,7 @@ public final class HttpConstants {
      */
     public static final Charset DEFAULT_CHARSET = CharsetUtil.UTF_8;
 
-    private HttpConstants() {
+    private StsConstants() {
         // Unused
     }
 }

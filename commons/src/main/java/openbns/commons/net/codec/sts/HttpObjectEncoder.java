@@ -28,7 +28,7 @@ import static io.netty.buffer.Unpooled.*;
 import static io.netty.handler.codec.http.HttpConstants.*;
 
 /**
- * Encodes an {@link HttpMessage} or an {@link HttpContent} into
+ * Encodes an {@link StsMessage} or an {@link StsContent} into
  * a {@link io.netty.buffer.ByteBuf}.
  *
  * <h3>Extensibility</h3>
@@ -40,7 +40,7 @@ import static io.netty.handler.codec.http.HttpConstants.*;
  * To implement the encoder of such a derived protocol, extend this class and
  * implement all abstract methods properly.
  */
-public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageToMessageEncoder<Object> {
+public abstract class HttpObjectEncoder<H extends StsMessage> extends MessageToMessageEncoder<Object> {
     private static final byte[] CRLF = { CR, LF };
     private static final byte[] ZERO_CRLF = { '0', CR, LF };
     private static final byte[] ZERO_CRLF_CRLF = { '0', CR, LF, CR, LF };
@@ -58,7 +58,8 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, List<Object> out) throws Exception {
         ByteBuf buf = null;
-        if (msg instanceof HttpMessage ) {
+
+        if (msg instanceof StsMessage ) {
             if (state != ST_INIT) {
                 throw new IllegalStateException("unexpected message type: " + StringUtil.simpleClassName(msg));
             }
@@ -73,17 +74,18 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
             buf.writeBytes(CRLF);
             state = StsHeaders.isTransferEncodingChunked( m ) ? ST_CONTENT_CHUNK : ST_CONTENT_NON_CHUNK;
         }
-        if (msg instanceof HttpContent || msg instanceof ByteBuf || msg instanceof FileRegion) {
+        if (msg instanceof StsContent || msg instanceof ByteBuf || msg instanceof FileRegion) {
             if (state == ST_INIT) {
-                throw new IllegalStateException("unexpected message type: " + StringUtil.simpleClassName(msg));
+              System.out.println( "unexpected message type:" + StringUtil.simpleClassName(msg) );
+//                throw new IllegalStateException("unexpected message type: " + StringUtil.simpleClassName(msg));
             }
 
             int contentLength = contentLength(msg);
             if (state == ST_CONTENT_NON_CHUNK) {
                 if (contentLength > 0) {
-                    if (buf != null && buf.writableBytes() >= contentLength && msg instanceof HttpContent ) {
+                    if (buf != null && buf.writableBytes() >= contentLength && msg instanceof StsContent ) {
                         // merge into other buffer for performance reasons
-                        buf.writeBytes(((HttpContent) msg).content());
+                        buf.writeBytes(((StsContent) msg).content());
                         out.add(buf);
                     } else {
                         if (buf != null) {
@@ -101,7 +103,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
                     }
                 }
 
-                if (msg instanceof LastHttpContent ) {
+                if (msg instanceof LastStsContent ) {
                     state = ST_INIT;
                 }
             } else if (state == ST_CONTENT_CHUNK) {
@@ -130,8 +132,8 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
             out.add(CRLF_BUF.duplicate());
         }
 
-        if (msg instanceof LastHttpContent ) {
-            StsHeaders headers = ((LastHttpContent) msg).trailingHeaders();
+        if (msg instanceof LastStsContent ) {
+            StsHeaders headers = ((LastStsContent) msg).trailingHeaders();
             if (headers.isEmpty()) {
                 out.add(ZERO_CRLF_CRLF_BUF.duplicate());
             } else {
@@ -154,15 +156,15 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
 
     @Override
     public boolean acceptOutboundMessage(Object msg) throws Exception {
-        return msg instanceof HttpObject || msg instanceof ByteBuf || msg instanceof FileRegion;
+        return msg instanceof StsObject || msg instanceof ByteBuf || msg instanceof FileRegion;
     }
 
     private static Object encodeAndRetain(Object msg) {
         if (msg instanceof ByteBuf) {
             return ((ByteBuf) msg).retain();
         }
-        if (msg instanceof HttpContent ) {
-            return ((HttpContent) msg).content().retain();
+        if (msg instanceof StsContent ) {
+            return ((StsContent) msg).content().retain();
         }
         if (msg instanceof FileRegion) {
             return ((FileRegion) msg).retain();
@@ -171,8 +173,8 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
     }
 
     private static int contentLength(Object msg) {
-        if (msg instanceof HttpContent ) {
-            return ((HttpContent) msg).content().readableBytes();
+        if (msg instanceof StsContent ) {
+            return ((StsContent) msg).content().readableBytes();
         }
         if (msg instanceof ByteBuf) {
             return ((ByteBuf) msg).readableBytes();

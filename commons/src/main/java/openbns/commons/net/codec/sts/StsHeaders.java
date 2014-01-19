@@ -21,15 +21,15 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static openbns.commons.net.codec.sts.HttpConstants.*;
+import static openbns.commons.net.codec.sts.StsConstants.*;
 
 /**
  * Provides the constants for the standard HTTP header names and values and
- * commonly used utility methods that accesses an {@link HttpMessage}.
+ * commonly used utility methods that accesses an {@link StsMessage}.
  */
 public abstract class StsHeaders implements Iterable<Entry<String, String>> {
 
-    private static final byte[] HEADER_SEPERATOR = { HttpConstants.COLON, HttpConstants.SP };
+    private static final byte[] HEADER_SEPERATOR = { StsConstants.COLON, StsConstants.SP };
     private static final byte[] CRLF = { CR, LF };
     private static final CharSequence CONTENT_LENGTH_ENTITY = newEntity( Names.CONTENT_LENGTH);
     private static final CharSequence CONNECTION_ENTITY = newEntity( Names.CONNECTION);
@@ -517,9 +517,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
   /**
-     * @see {@link #getHeader(HttpMessage, CharSequence)}
+     * @see {@link #getHeader(StsMessage, CharSequence)}
      */
-    public static String getHeader(HttpMessage message, String name) {
+    public static String getHeader(StsMessage message, String name) {
         return message.headers().get(name);
     }
 
@@ -530,14 +530,14 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      *
      * @return the header value or {@code null} if there is no such header
      */
-    public static String getHeader(HttpMessage message, CharSequence name) {
+    public static String getHeader(StsMessage message, CharSequence name) {
         return message.headers().get(name);
     }
 
     /**
-     * @see {@link #getHeader(HttpMessage, CharSequence, String)}
+     * @see {@link #getHeader(StsMessage, CharSequence, String)}
      */
-    public static String getHeader(HttpMessage message, String name, String defaultValue) {
+    public static String getHeader(StsMessage message, String name, String defaultValue) {
         return getHeader( message, (CharSequence) name, defaultValue );
     }
 
@@ -549,7 +549,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * @return the header value or the {@code defaultValue} if there is no such
      *         header
      */
-    public static String getHeader(HttpMessage message, CharSequence name, String defaultValue) {
+    public static String getHeader(StsMessage message, CharSequence name, String defaultValue) {
         String value = message.headers().get(name);
         if (value == null) {
             return defaultValue;
@@ -558,9 +558,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * @see {@link #setHeader(HttpMessage, CharSequence, Object)}
+     * @see {@link #setHeader(StsMessage, CharSequence, Object)}
      */
-    public static void setHeader(HttpMessage message, String name, Object value) {
+    public static void setHeader(StsMessage message, String name, Object value) {
         message.headers().set(name, value);
     }
 
@@ -572,15 +572,15 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * and {@link java.util.Calendar} which are formatted to the date format defined in
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>.
      */
-    public static void setHeader(HttpMessage message, CharSequence name, Object value) {
+    public static void setHeader(StsMessage message, CharSequence name, Object value) {
         message.headers().set(name, value);
     }
 
     /**
      *
-     * @see {@link #setHeader(HttpMessage, CharSequence, Iterable)}
+     * @see {@link #setHeader(StsMessage, CharSequence, Iterable)}
      */
-    public static void setHeader(HttpMessage message, String name, Iterable<?> values) {
+    public static void setHeader(StsMessage message, String name, Iterable<?> values) {
         message.headers().set(name, values);
     }
 
@@ -598,14 +598,14 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * }
      * </pre>
      */
-    public static void setHeader(HttpMessage message, CharSequence name, Iterable<?> values) {
+    public static void setHeader(StsMessage message, CharSequence name, Iterable<?> values) {
         message.headers().set(name, values);
     }
 
     /**
-     * @see {@link #addHeader(HttpMessage, CharSequence, Object)}
+     * @see {@link #addHeader(StsMessage, CharSequence, Object)}
      */
-    public static void addHeader(HttpMessage message, String name, Object value) {
+    public static void addHeader(StsMessage message, String name, Object value) {
         message.headers().add( name, value );
     }
 
@@ -616,35 +616,35 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * and {@link java.util.Calendar} which are formatted to the date format defined in
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>.
      */
-    public static void addHeader(HttpMessage message, CharSequence name, Object value) {
+    public static void addHeader(StsMessage message, CharSequence name, Object value) {
         message.headers().add( name, value );
     }
 
     /**
-     * @see {@link #removeHeader(HttpMessage, CharSequence)}
+     * @see {@link #removeHeader(StsMessage, CharSequence)}
      */
-    public static void removeHeader(HttpMessage message, String name) {
+    public static void removeHeader(StsMessage message, String name) {
         message.headers().remove( name );
     }
 
     /**
      * Removes the header with the specified name.
      */
-    public static void removeHeader(HttpMessage message, CharSequence name) {
+    public static void removeHeader(StsMessage message, CharSequence name) {
         message.headers().remove( name );
     }
 
     /**
      * Removes all headers from the specified message.
      */
-    public static void clearHeaders(HttpMessage message) {
+    public static void clearHeaders(StsMessage message) {
         message.headers().clear();
     }
 
     /**
-     * @see {@link #getIntHeader(HttpMessage, CharSequence)}
+     * @see {@link #getIntHeader(StsMessage, CharSequence)}
      */
-    public static int getIntHeader(HttpMessage message, String name) {
+    public static int getIntHeader(StsMessage message, String name) {
         return getIntHeader(message, (CharSequence) name);
     }
 
@@ -657,7 +657,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * @throws NumberFormatException
      *         if there is no such header or the header value is not a number
      */
-    public static int getIntHeader(HttpMessage message, CharSequence name) {
+    public static int getIntHeader(StsMessage message, CharSequence name) {
         String value = getHeader(message, name);
         if (value == null) {
             throw new NumberFormatException("header not found: " + name);
@@ -666,9 +666,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * @see {@link #getIntHeader(HttpMessage, CharSequence, int)}
+     * @see {@link #getIntHeader(StsMessage, CharSequence, int)}
      */
-    public static int getIntHeader(HttpMessage message, String name, int defaultValue) {
+    public static int getIntHeader(StsMessage message, String name, int defaultValue) {
         return getIntHeader(message, (CharSequence) name, defaultValue);
     }
 
@@ -680,7 +680,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * @return the header value or the {@code defaultValue} if there is no such
      *         header or the header value is not a number
      */
-    public static int getIntHeader(HttpMessage message, CharSequence name, int defaultValue) {
+    public static int getIntHeader(StsMessage message, CharSequence name, int defaultValue) {
         String value = getHeader(message, name);
         if (value == null) {
             return defaultValue;
@@ -694,9 +694,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * @see {@link #setIntHeader(HttpMessage, CharSequence, int)}
+     * @see {@link #setIntHeader(StsMessage, CharSequence, int)}
      */
-    public static void setIntHeader(HttpMessage message, String name, int value) {
+    public static void setIntHeader(StsMessage message, String name, int value) {
         message.headers().set(name, value);
     }
 
@@ -704,14 +704,14 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * Sets a new integer header with the specified name and value.  If there
      * is an existing header with the same name, the existing header is removed.
      */
-    public static void setIntHeader(HttpMessage message, CharSequence name, int value) {
+    public static void setIntHeader(StsMessage message, CharSequence name, int value) {
         message.headers().set(name, value);
     }
 
     /**
-     * @see {@link #setIntHeader(HttpMessage, CharSequence, Iterable)}
+     * @see {@link #setIntHeader(StsMessage, CharSequence, Iterable)}
      */
-    public static void setIntHeader(HttpMessage message, String name, Iterable<Integer> values) {
+    public static void setIntHeader(StsMessage message, String name, Iterable<Integer> values) {
         message.headers().set(name, values);
     }
 
@@ -719,29 +719,29 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * Sets a new integer header with the specified name and values.  If there
      * is an existing header with the same name, the existing header is removed.
      */
-    public static void setIntHeader(HttpMessage message, CharSequence name, Iterable<Integer> values) {
+    public static void setIntHeader(StsMessage message, CharSequence name, Iterable<Integer> values) {
         message.headers().set(name, values);
     }
 
     /**
      *
-     * @see {@link #addIntHeader(HttpMessage, CharSequence, int)}
+     * @see {@link #addIntHeader(StsMessage, CharSequence, int)}
      */
-    public static void addIntHeader(HttpMessage message, String name, int value) {
+    public static void addIntHeader(StsMessage message, String name, int value) {
         message.headers().add( name, value );
     }
 
     /**
      * Adds a new integer header with the specified name and value.
      */
-    public static void addIntHeader(HttpMessage message, CharSequence name, int value) {
+    public static void addIntHeader(StsMessage message, CharSequence name, int value) {
         message.headers().add( name, value );
     }
 
     /**
-     * @see {@link #getDateHeader(HttpMessage, CharSequence)}
+     * @see {@link #getDateHeader(StsMessage, CharSequence)}
      */
-    public static Date getDateHeader(HttpMessage message, String name) throws ParseException {
+    public static Date getDateHeader(StsMessage message, String name) throws ParseException {
         return getDateHeader(message, (CharSequence) name);
     }
 
@@ -754,7 +754,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * @throws java.text.ParseException
      *         if there is no such header or the header value is not a formatted date
      */
-    public static Date getDateHeader(HttpMessage message, CharSequence name) throws ParseException {
+    public static Date getDateHeader(StsMessage message, CharSequence name) throws ParseException {
         String value = getHeader(message, name);
         if (value == null) {
             throw new ParseException("header not found: " + name, 0);
@@ -763,9 +763,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * @see {@link #getDateHeader(HttpMessage, CharSequence, java.util.Date)}
+     * @see {@link #getDateHeader(StsMessage, CharSequence, java.util.Date)}
      */
-    public static Date getDateHeader(HttpMessage message, String name, Date defaultValue) {
+    public static Date getDateHeader(StsMessage message, String name, Date defaultValue) {
         return getDateHeader(message, (CharSequence) name, defaultValue);
     }
 
@@ -777,7 +777,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * @return the header value or the {@code defaultValue} if there is no such
      *         header or the header value is not a formatted date
      */
-    public static Date getDateHeader(HttpMessage message, CharSequence name, Date defaultValue) {
+    public static Date getDateHeader(StsMessage message, CharSequence name, Date defaultValue) {
         final String value = getHeader(message, name);
         if (value == null) {
             return defaultValue;
@@ -791,9 +791,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * @see {@link #setDateHeader(HttpMessage, CharSequence, java.util.Date)}
+     * @see {@link #setDateHeader(StsMessage, CharSequence, java.util.Date)}
      */
-    public static void setDateHeader(HttpMessage message, String name, Date value) {
+    public static void setDateHeader(StsMessage message, String name, Date value) {
         setDateHeader(message, (CharSequence) name, value);
     }
 
@@ -803,7 +803,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * The specified value is formatted as defined in
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>
      */
-    public static void setDateHeader(HttpMessage message, CharSequence name, Date value) {
+    public static void setDateHeader(StsMessage message, CharSequence name, Date value) {
         if (value != null) {
             message.headers().set(name, HttpHeaderDateFormat.get().format(value));
         } else {
@@ -812,9 +812,9 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * @see {@link #setDateHeader(HttpMessage, CharSequence, Iterable)}
+     * @see {@link #setDateHeader(StsMessage, CharSequence, Iterable)}
      */
-    public static void setDateHeader(HttpMessage message, String name, Iterable<Date> values) {
+    public static void setDateHeader(StsMessage message, String name, Iterable<Date> values) {
         message.headers().set( name, values );
     }
 
@@ -824,14 +824,14 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * The specified values are formatted as defined in
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>
      */
-    public static void setDateHeader(HttpMessage message, CharSequence name, Iterable<Date> values) {
+    public static void setDateHeader(StsMessage message, CharSequence name, Iterable<Date> values) {
         message.headers().set(name, values);
     }
 
     /**
-     * @see {@link #addDateHeader(HttpMessage, CharSequence, java.util.Date)}
+     * @see {@link #addDateHeader(StsMessage, CharSequence, java.util.Date)}
      */
-    public static void addDateHeader(HttpMessage message, String name, Date value) {
+    public static void addDateHeader(StsMessage message, String name, Date value) {
         message.headers().add( name, value );
     }
 
@@ -840,13 +840,13 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * value is formatted as defined in
      * <a href="sts://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>
      */
-    public static void addDateHeader(HttpMessage message, CharSequence name, Date value) {
+    public static void addDateHeader(StsMessage message, CharSequence name, Date value) {
         message.headers().add( name, value );
     }
 
     /**
      * Returns the length of the content.  Please note that this value is
-     * not retrieved from {@link HttpContent#content()} but from the
+     * not retrieved from {@link StsContent#content()} but from the
      * {@code "Content-Length"} header, and thus they are independent from each
      * other.
      *
@@ -856,7 +856,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      *         if the message does not have the {@code "Content-Length"} header
      *         or its value is not a number
      */
-    public static long getContentLength(HttpMessage message) {
+    public static long getContentLength(StsMessage message) {
         String value = getHeader(message, CONTENT_LENGTH_ENTITY);
         if (value != null) {
             return Long.parseLong(value);
@@ -868,7 +868,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
 
     /**
      * Returns the length of the content.  Please note that this value is
-     * not retrieved from {@link HttpContent#content()} but from the
+     * not retrieved from {@link StsContent#content()} but from the
      * {@code "Content-Length"} header, and thus they are independent from each
      * other.
      *
@@ -876,7 +876,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      *         not have the {@code "Content-Length"} header or its value is not
      *         a number
      */
-    public static long getContentLength(HttpMessage message, long defaultValue) {
+    public static long getContentLength(StsMessage message, long defaultValue) {
         String contentLength = message.headers().get(CONTENT_LENGTH_ENTITY);
         if (contentLength != null) {
             try {
@@ -893,14 +893,14 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
   /**
      * Sets the {@code "Content-Length"} header.
      */
-    public static void setContentLength(HttpMessage message, long length) {
+    public static void setContentLength(StsMessage message, long length) {
         message.headers().set(CONTENT_LENGTH_ENTITY, length);
     }
 
     /**
      * Returns the value of the {@code "Host"} header.
      */
-    public static String getHost(HttpMessage message) {
+    public static String getHost(StsMessage message) {
         return message.headers().get(HOST_ENTITY);
     }
 
@@ -908,21 +908,21 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * Returns the value of the {@code "Host"} header.  If there is no such
      * header, the {@code defaultValue} is returned.
      */
-    public static String getHost(HttpMessage message, String defaultValue) {
+    public static String getHost(StsMessage message, String defaultValue) {
         return getHeader(message, HOST_ENTITY, defaultValue);
     }
 
     /**
-     * @see {@link #setHost(HttpMessage, CharSequence)}
+     * @see {@link #setHost(StsMessage, CharSequence)}
      */
-    public static void setHost(HttpMessage message, String value) {
+    public static void setHost(StsMessage message, String value) {
         message.headers().set(HOST_ENTITY, value);
     }
 
     /**
      * Sets the {@code "Host"} header.
      */
-    public static void setHost(HttpMessage message, CharSequence value) {
+    public static void setHost(StsMessage message, CharSequence value) {
         message.headers().set(HOST_ENTITY, value);
     }
 
@@ -932,7 +932,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * @throws java.text.ParseException
      *         if there is no such header or the header value is not a formatted date
      */
-    public static Date getDate(HttpMessage message) throws ParseException {
+    public static Date getDate(StsMessage message) throws ParseException {
         return getDateHeader(message, DATE_ENTITY);
     }
 
@@ -941,14 +941,14 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
      * header or the header is not a formatted date, the {@code defaultValue}
      * is returned.
      */
-    public static Date getDate(HttpMessage message, Date defaultValue) {
+    public static Date getDate(StsMessage message, Date defaultValue) {
         return getDateHeader(message, DATE_ENTITY, defaultValue);
     }
 
     /**
      * Sets the {@code "Date"} header.
      */
-    public static void setDate(HttpMessage message, Date value) {
+    public static void setDate(StsMessage message, Date value) {
         if (value != null) {
             message.headers().set(DATE_ENTITY, HttpHeaderDateFormat.get().format(value));
         } else {
@@ -1066,16 +1066,16 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * Checks to see if the transfer encoding in a specified {@link HttpMessage} is chunked
+     * Checks to see if the transfer encoding in a specified {@link StsMessage} is chunked
      *
      * @param message The message to check
      * @return True if transfer encoding is chunked, otherwise false
      */
-    public static boolean isTransferEncodingChunked(HttpMessage message) {
+    public static boolean isTransferEncodingChunked(StsMessage message) {
         return message.headers().contains(TRANSFER_ENCODING_ENTITY, CHUNKED_ENTITY, true);
     }
 
-    public static void removeTransferEncodingChunked(HttpMessage m) {
+    public static void removeTransferEncodingChunked(StsMessage m) {
         List<String> values = m.headers().getAll(TRANSFER_ENCODING_ENTITY);
         if (values.isEmpty()) {
             return;
@@ -1094,12 +1094,12 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
         }
     }
 
-    public static void setTransferEncodingChunked(HttpMessage m) {
+    public static void setTransferEncodingChunked(StsMessage m) {
         addHeader(m, TRANSFER_ENCODING_ENTITY, CHUNKED_ENTITY);
         removeHeader(m, CONTENT_LENGTH_ENTITY);
     }
 
-    public static boolean isContentLengthSet(HttpMessage m) {
+    public static boolean isContentLengthSet(StsMessage m) {
         return m.headers().contains(CONTENT_LENGTH_ENTITY);
     }
 
@@ -1417,7 +1417,7 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>> {
     }
 
     /**
-     * Removes all headers from this {@link HttpMessage}.
+     * Removes all headers from this {@link StsMessage}.
      *
      * @return {@code this}
      */

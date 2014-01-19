@@ -16,34 +16,20 @@
 package openbns.commons.net.codec.sts;
 
 
-/**
- * An HTTP request.
- *
- * <h3>Accessing Query Parameters and Cookie</h3>
- * <p>
- * Unlike the Servlet API, a query string is constructed and decomposed by
- * {@link QueryStringEncoder} and {@link QueryStringDecoder}.  {@link Cookie}
- * support is also provided separately via {@link CookieDecoder}, {@link ClientCookieEncoder},
- * and {@link @ServerCookieEncoder}.
- *
- * @see HttpResponse
- * @see ClientCookieEncoder
- * @see ServerCookieEncoder
- * @see CookieDecoder
- */
-public interface HttpRequest extends HttpMessage {
+public interface StsRequest extends StsMessage
+{
 
     /**
-     * Returns the {@link HttpMethod} of this {@link HttpRequest}.
+     * Returns the {@link StsMethod} of this {@link StsRequest}.
      *
-     * @return The {@link HttpMethod} of this {@link HttpRequest}
+     * @return The {@link StsMethod} of this {@link StsRequest}
      */
-    HttpMethod getMethod();
+    StsMethod getMethod();
 
     /**
-     * Set the {@link HttpMethod} of this {@link HttpRequest}.
+     * Set the {@link StsMethod} of this {@link StsRequest}.
      */
-    HttpRequest setMethod( HttpMethod method );
+    StsRequest setMethod( StsMethod method );
 
     /**
      * Returns the requested URI (or alternatively, path)
@@ -55,8 +41,8 @@ public interface HttpRequest extends HttpMessage {
     /**
      *  Set the requested URI (or alternatively, path)
      */
-    HttpRequest setUri( String uri );
+    StsRequest setUri( String uri );
 
     @Override
-    HttpRequest setProtocolVersion( StsVersion version );
+    StsRequest setProtocolVersion( StsVersion version );
 }

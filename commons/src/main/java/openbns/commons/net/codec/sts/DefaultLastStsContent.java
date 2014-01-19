@@ -22,50 +22,50 @@ import io.netty.util.internal.StringUtil;
 import java.util.Map;
 
 /**
- * The default {@link LastHttpContent} implementation.
+ * The default {@link LastStsContent} implementation.
  */
-public class DefaultLastHttpContent extends DefaultHttpContent implements LastHttpContent
+public class DefaultLastStsContent extends DefaultStsContent implements LastStsContent
 {
 
     private final StsHeaders trailingHeaders;
     private final boolean validateHeaders;
 
-    public DefaultLastHttpContent() {
+    public DefaultLastStsContent() {
         this(Unpooled.buffer(0));
     }
 
-    public DefaultLastHttpContent(ByteBuf content) {
+    public DefaultLastStsContent( ByteBuf content ) {
         this(content, true);
     }
 
-    public DefaultLastHttpContent(ByteBuf content, boolean validateHeaders) {
+    public DefaultLastStsContent( ByteBuf content, boolean validateHeaders ) {
         super(content);
         trailingHeaders = new TrailingHeaders(validateHeaders);
         this.validateHeaders = validateHeaders;
     }
 
     @Override
-    public LastHttpContent copy() {
-        DefaultLastHttpContent copy = new DefaultLastHttpContent(content().copy(), validateHeaders);
+    public LastStsContent copy() {
+        DefaultLastStsContent copy = new DefaultLastStsContent(content().copy(), validateHeaders);
         copy.trailingHeaders().set(trailingHeaders());
         return copy;
     }
 
     @Override
-    public LastHttpContent duplicate() {
-        DefaultLastHttpContent copy = new DefaultLastHttpContent(content().duplicate(), validateHeaders);
+    public LastStsContent duplicate() {
+        DefaultLastStsContent copy = new DefaultLastStsContent(content().duplicate(), validateHeaders);
         copy.trailingHeaders().set(trailingHeaders());
         return copy;
     }
 
     @Override
-    public LastHttpContent retain(int increment) {
+    public LastStsContent retain(int increment) {
         super.retain(increment);
         return this;
     }
 
     @Override
-    public LastHttpContent retain() {
+    public LastStsContent retain() {
         super.retain();
         return this;
     }

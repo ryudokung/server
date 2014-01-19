@@ -18,12 +18,12 @@ package openbns.commons.net.codec.sts;
 import io.netty.util.internal.StringUtil;
 
 /**
- * The default {@link HttpRequest} implementation.
+ * The default {@link StsRequest} implementation.
  */
-public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
+public class DefaultStsRequest extends DefaultStsMessage implements StsRequest
 {
 
-    private HttpMethod method;
+    private StsMethod method;
     private String uri;
 
     /**
@@ -33,7 +33,7 @@ public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
      * @param method      the HTTP getMethod of the request
      * @param uri         the URI or path of the request
      */
-    public DefaultStsRequest( StsVersion stsVersion, HttpMethod method, String uri ) {
+    public DefaultStsRequest( StsVersion stsVersion, StsMethod method, String uri ) {
         this( stsVersion, method, uri, true);
     }
 
@@ -45,7 +45,7 @@ public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
      * @param uri               the URI or path of the request
      * @param validateHeaders   validate the headers when adding them
      */
-    public DefaultStsRequest( StsVersion stsVersion, HttpMethod method, String uri, boolean validateHeaders ) {
+    public DefaultStsRequest( StsVersion stsVersion, StsMethod method, String uri, boolean validateHeaders ) {
         super( stsVersion, validateHeaders);
         if (method == null) {
             throw new NullPointerException("method");
@@ -58,7 +58,7 @@ public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
     }
 
     @Override
-    public HttpMethod getMethod() {
+    public StsMethod getMethod() {
         return method;
     }
 
@@ -68,7 +68,7 @@ public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
     }
 
     @Override
-    public HttpRequest setMethod(HttpMethod method) {
+    public StsRequest setMethod(StsMethod method) {
         if (method == null) {
             throw new NullPointerException("method");
         }
@@ -77,7 +77,7 @@ public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
     }
 
     @Override
-    public HttpRequest setUri(String uri) {
+    public StsRequest setUri(String uri) {
         if (uri == null) {
             throw new NullPointerException("uri");
         }
@@ -86,7 +86,7 @@ public class DefaultStsRequest extends DefaultHttpMessage implements HttpRequest
     }
 
     @Override
-    public HttpRequest setProtocolVersion(StsVersion version) {
+    public StsRequest setProtocolVersion(StsVersion version) {
         super.setProtocolVersion(version);
         return this;
     }

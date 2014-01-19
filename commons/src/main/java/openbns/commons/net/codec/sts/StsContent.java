@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Netty Project
+ * Copyright 2012 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -15,23 +15,26 @@
  */
 package openbns.commons.net.codec.sts;
 
+import io.netty.buffer.ByteBufHolder;
+
 /**
- * Combination of a {@link HttpResponse} and {@link FullHttpMessage}.
- * So it represent a <i>complete</i> sts response.
+ * An HTTP chunk which is used for HTTP chunked transfer-encoding.
+ * {@link HttpObjectDecoder} generates {@link StsContent} after
+ * {@link StsMessage} when the content is large or the encoding of the content
+ * is 'chunked.  If you prefer not to receive {@link StsContent} in your handler,
+ * place {@link HttpObjectAggregator} after {@link HttpObjectDecoder} in the
+ * {@link io.netty.channel.ChannelPipeline}.
  */
-public interface FullHttpResponse extends HttpResponse, FullHttpMessage {
+public interface StsContent extends StsObject, ByteBufHolder {
     @Override
-    FullHttpResponse copy();
+    StsContent copy();
 
     @Override
-    FullHttpResponse retain( int increment );
+    StsContent duplicate();
 
     @Override
-    FullHttpResponse retain();
+    StsContent retain();
 
     @Override
-    FullHttpResponse setProtocolVersion( StsVersion version );
-
-    @Override
-    FullHttpResponse setStatus( StsResponseStatus status );
+    StsContent retain( int increment );
 }
