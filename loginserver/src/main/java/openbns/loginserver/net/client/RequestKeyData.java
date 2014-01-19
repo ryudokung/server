@@ -11,6 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias( "Request" )
 public class RequestKeyData
 {
+  @XStreamAlias( "KeyData" )
   private String keyData;
 
   public String getKeyData()

@@ -1,12 +1,13 @@
 package openbns.loginserver.net;
 
-import com.thoughtworks.xstream.XStream;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import openbns.commons.net.RC4;
 import openbns.commons.net.codec.sts.*;
 import openbns.commons.xml.StsXStream;
+import openbns.loginserver.net.client.RequestKeyData;
 import openbns.loginserver.net.server.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +24,9 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   private String lastURI;
   private String keyData;
   private int session;
+
+  private RC4 inCrypt;
+  private RC4 outCrypt;
 
   // TODO: REFACTOR ALL. ITS ONLY FOR TESTING
   @Override
@@ -41,7 +45,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
     else if( msg instanceof LastStsContent )
     {
       LastStsContent content = (LastStsContent) msg;
-      ByteBuf buffer = content.content();
+//      ByteBuf buffer = content.content();
 
 //      StringBuilder builder = new StringBuilder();
 //
@@ -75,6 +79,23 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
           ctx.writeAndFlush( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
           break;
         case "/Auth/KeyData":
+          StsXStream str = new StsXStream();
+          str.processAnnotations( RequestKeyData.class );
+
+          ByteBuf buffer = content.content();
+          StringBuilder builder = new StringBuilder();
+          while( buffer.isReadable() )
+            builder.append( (char) buffer.readByte() );
+
+          RequestKeyData rkd = (RequestKeyData) str.fromXML( builder.toString() );
+
+          String key = rkd.getKeyData();
+
+          log.debug( key );
+
+          DefaultFullStsResponse deny = new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE );
+          ctx.write( deny );
+
           break;
         default:
           log.warn( "No handler available for request " + lastURI );

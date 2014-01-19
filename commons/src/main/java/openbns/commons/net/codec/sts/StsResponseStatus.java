@@ -122,7 +122,7 @@ public class StsResponseStatus implements Comparable<StsResponseStatus> {
     /**
      * 400 Bad Request
      */
-    public static final StsResponseStatus BAD_REQUEST = new StsResponseStatus(400, "Bad Request", true);
+    public static final StsResponseStatus NOT_ONLINE = new StsResponseStatus(400, "ErrUserNotOnline", true);
 
     /**
      * 401 Unauthorized
@@ -361,7 +361,7 @@ public class StsResponseStatus implements Comparable<StsResponseStatus> {
         case 307:
             return TEMPORARY_REDIRECT;
         case 400:
-            return BAD_REQUEST;
+            return NOT_ONLINE;
         case 401:
             return UNAUTHORIZED;
         case 402:
