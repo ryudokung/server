@@ -124,7 +124,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
 
           log.debug( "AFTER RC4 CL: " + Arrays.toString( client ) );
           log.debug( "AFTER RC4 SR: " + Arrays.toString( server ) );
-          log.debug( "SHA HASH=" + Arrays.toString( KeyManager.getInstance().getPasswordHash( "d93799929d" ) ) );
 
           DefaultFullStsResponse deny = new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE );
           ctx.write( deny );
