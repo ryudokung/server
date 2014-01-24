@@ -7,10 +7,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import openbns.commons.net.RC4;
 import openbns.commons.net.codec.sts.*;
 import openbns.commons.xml.StsXStream;
+import openbns.loginserver.crypt.KeyManager;
 import openbns.loginserver.net.client.RequestKeyData;
 import openbns.loginserver.net.server.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import sun.misc.BASE64Decoder;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +32,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   private int session;
 
   private RC4 inCrypt;
-  private RC4 outCrypt;
+  private RC4 outCrypt = new RC4( KeyManager.ND_SERVER_KEY );
 
   // TODO: REFACTOR ALL. ITS ONLY FOR TESTING
   @Override
@@ -93,6 +99,33 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
 
           log.debug( key );
 
+          BASE64Decoder decoder = new BASE64Decoder();
+
+          DataInputStream dis = new DataInputStream( new ByteArrayInputStream( decoder.decodeBuffer( key ) ) );
+          // RC4 key
+          int size = Integer.reverseBytes( dis.readInt() );
+          byte[] bytes = new byte[ size ];
+          dis.read( bytes );
+          inCrypt = new RC4( bytes );
+
+          // Password hash
+          size = Integer.reverseBytes( dis.readInt() );
+          bytes = new byte[ size ];
+          dis.read( bytes );
+
+          log.debug( "Password hash: " + Arrays.toString( bytes ) );
+          log.debug( "Password hash: " + new String( bytes  ));
+
+          byte[] client = Arrays.copyOf( bytes, size );
+          byte[] server = Arrays.copyOf( bytes, size );
+
+          inCrypt.rc4( client, 0, bytes.length );
+          outCrypt.rc4( server, 0, bytes.length );
+
+          log.debug( "AFTER RC4 CL: " + Arrays.toString( client ) );
+          log.debug( "AFTER RC4 SR: " + Arrays.toString( server ) );
+          log.debug( "SHA HASH=" + Arrays.toString( KeyManager.getInstance().getPasswordHash( "d93799929d" ) ) );
+
           DefaultFullStsResponse deny = new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE );
           ctx.write( deny );
 
@@ -114,7 +147,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   @Override
   public void exceptionCaught( ChannelHandlerContext ctx, Throwable cause ) throws Exception
   {
-    log.error( "LoginServerHandler: Exception!!!", cause );
+//    log.error( "LoginServerHandler: Exception!!!", cause );
     ctx.close();
   }
 
