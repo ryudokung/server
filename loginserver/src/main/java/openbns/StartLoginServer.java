@@ -27,6 +27,7 @@ public class StartLoginServer
   {
     log.info( "Start loading login server" );
     Config.load();
+    DataBaseFactory.getInstance();
 
     EventLoopGroup bossGroup = new NioEventLoopGroup();
     EventLoopGroup workerGroup = new NioEventLoopGroup();

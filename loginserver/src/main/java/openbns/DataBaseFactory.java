@@ -1,6 +1,8 @@
 package openbns;
 
 import org.apache.commons.dbcp.BasicDataSourceFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -16,6 +18,7 @@ import java.util.Properties;
  */
 public class DataBaseFactory
 {
+  private static final Log log = LogFactory.getLog( DataBaseFactory.class );
   private static DataBaseFactory ourInstance = new DataBaseFactory();
   private DataSource dataSource;
 
@@ -31,9 +34,11 @@ public class DataBaseFactory
       Properties properties = new Properties();
       properties.load( is );
       dataSource = BasicDataSourceFactory.createDataSource( properties );
+      log.info( "DataSource initialized successfully" );
     }
     catch( Exception e )
     {
+      log.error( "DataSource initializing failed", e );
       System.exit( 1 );
     }
   }
