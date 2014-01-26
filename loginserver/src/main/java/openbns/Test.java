@@ -3,10 +3,14 @@ package openbns;
 import openbns.loginserver.crypt.KeyManager;
 import sun.misc.BASE64Decoder;
 
+import javax.crypto.spec.DHParameterSpec;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.security.AlgorithmParameterGenerator;
+import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.Arrays;
 
 /**
@@ -17,7 +21,7 @@ import java.util.Arrays;
  */
 public class Test
 {
-  public static void main( String[] args ) throws IOException, NoSuchAlgorithmException
+  public static void main( String[] args ) throws IOException, NoSuchAlgorithmException, InvalidParameterSpecException
 
   {
 //    String s = "CAAAAECCFuuwk9gFgAAAAPPz8eAzBs/V/75tRz0caaVJQxHWuC7qfyWvHA+nZMQP1MyHNE1UpLfpf6vUJl3dGfGsethsrufh/3xQ/gDi0ISMOG4sPF49k1tIg5hR9RrqTHdyLYWAb5OZWarjZcrmAPP6JGMBqRS4HQvVwJaJpiSrF/SJN7bX+IchUgIYN5Bg";
@@ -40,7 +44,20 @@ public class Test
     System.out.println( Arrays.toString( key_1 ) );
     System.out.println( Arrays.toString( key_2 ) );
 
-    byte[] hash = KeyManager.getInstance().getLoginPasswordHash( "root", "root" );
-    System.out.println( Arrays.toString( hash ) );
+//    byte[] hash = KeyManager.getInstance().getLoginPasswordHash( "root", "root" );
+//    System.out.println( Arrays.toString( hash ) );
+
+    exchange();
+  }
+
+  public static void exchange() throws NoSuchAlgorithmException, InvalidParameterSpecException
+  {
+    AlgorithmParameterGenerator paramGen = AlgorithmParameterGenerator.getInstance( "DH" );
+    paramGen.init( 1024 );
+    AlgorithmParameters params = paramGen.generateParameters();
+    DHParameterSpec dhSpec = (DHParameterSpec) params.getParameterSpec( DHParameterSpec.class );
+    System.out.println( Arrays.toString( dhSpec.getP().toByteArray() ) );
+    System.out.println( Arrays.toString( dhSpec.getG().toByteArray() ) );
+    System.out.println( dhSpec.getL() );
   }
 }
