@@ -51,16 +51,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
     else if( msg instanceof LastStsContent )
     {
       LastStsContent content = (LastStsContent) msg;
-//      ByteBuf buffer = content.content();
-
-//      StringBuilder builder = new StringBuilder();
-//
-//      while( buffer.isReadable() )
-//      {
-//        builder.append( (char) buffer.readByte() );
-//      }
-//      log.debug( builder.toString() );
-
       switch( lastURI )
       {
         case "/Sts/Connect":
