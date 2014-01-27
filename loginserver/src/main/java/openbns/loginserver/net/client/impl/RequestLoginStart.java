@@ -1,7 +1,11 @@
 package openbns.loginserver.net.client.impl;
 
-import openbns.loginserver.net.client.AbstractRequestHandler;
-import openbns.loginserver.net.client.dto.KeyDataDTO;
+import io.netty.buffer.ByteBufInputStream;
+import openbns.commons.xml.StsXStream;
+import openbns.loginserver.net.client.AbstractRequestPacket;
+import openbns.loginserver.net.client.dto.LoginStartDTO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,9 +13,19 @@ import openbns.loginserver.net.client.dto.KeyDataDTO;
  * Date: 27.01.14
  * Time: 21:11
  */
-public class RequestLoginStart extends AbstractRequestHandler<KeyDataDTO>
+public class RequestLoginStart extends AbstractRequestPacket
 {
-  private static final String AUTH_LOGIN_START = "/Auth/LoginStart";
+  private static final Log log = LogFactory.getLog( RequestLoginStart.class );
+
+  @Override
+  public void read()
+  {
+    StsXStream stream = new StsXStream();
+    stream.processAnnotations( LoginStartDTO.class );
+
+    LoginStartDTO connectDTO = (LoginStartDTO) stream.fromXML( new ByteBufInputStream( buf ) );
+    log.debug( "Read from client object: " + connectDTO );
+  }
 
   @Override
   public void execute()

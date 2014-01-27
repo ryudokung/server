@@ -11,6 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias( "Request" )
 public class LoginStartDTO
 {
+  @XStreamAlias( "LoginName" )
   private String loginName;
 
   public String getLoginName()

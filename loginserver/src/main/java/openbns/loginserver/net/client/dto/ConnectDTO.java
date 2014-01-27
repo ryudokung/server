@@ -11,13 +11,28 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias( "Connect" )
 public class ConnectDTO
 {
+  @XStreamAlias( "ConnType" )
   private int connType;
+
+  @XStreamAlias( "Address" )
   private String address;
+
+  @XStreamAlias( "ProductType" )
   private int productType;
+
+  @XStreamAlias( "AppIndex" )
   private int appIndex;
+
+  @XStreamAlias( "Epoch" )
   private long epoch;
+
+  @XStreamAlias( "Program" )
   private int program;
+
+  @XStreamAlias( "Build" )
   private int build;
+
+  @XStreamAlias( "Process" )
   private int process;
 
   public int getConnType()
@@ -98,5 +113,20 @@ public class ConnectDTO
   public void setProcess( int process )
   {
     this.process = process;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "ConnectDTO{" +
+            "connType=" + connType +
+            ", address='" + address + '\'' +
+            ", productType=" + productType +
+            ", appIndex=" + appIndex +
+            ", epoch=" + epoch +
+            ", program=" + program +
+            ", build=" + build +
+            ", process=" + process +
+            '}';
   }
 }
