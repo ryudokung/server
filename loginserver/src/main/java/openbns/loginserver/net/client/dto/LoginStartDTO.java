@@ -23,4 +23,12 @@ public class LoginStartDTO
   {
     this.loginName = loginName;
   }
+
+  @Override
+  public String toString()
+  {
+    return "LoginStartDTO{" +
+            "loginName='" + loginName + '\'' +
+            '}';
+  }
 }

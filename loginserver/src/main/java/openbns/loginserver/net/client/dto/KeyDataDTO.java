@@ -23,4 +23,12 @@ public class KeyDataDTO
   {
     this.keyData = keyData;
   }
+
+  @Override
+  public String toString()
+  {
+    return "KeyDataDTO{" +
+            "keyData='" + keyData + '\'' +
+            '}';
+  }
 }
