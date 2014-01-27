@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<routes>
-    <rout mathod="POST" url="/Sts/Connect" class="openbns.loginserver.net.client.RequestConnect"/>
-    <rout mathod="POST" url="/Auth/LoginStart" class="openbns.loginserver.net.client.RequestLogin"/>
-    <rout mathod="POST" url="/Auth/KeyData" class="openbns.loginserver.net.client.RequestKeyData"/>
-</routes>

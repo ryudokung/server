@@ -1,4 +1,4 @@
-package openbns.loginserver.net.client;
+package openbns.loginserver.net.client.dto;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Time: 23:01
  */
 @XStreamAlias( "Request" )
-public class RequestLogin
+public class LoginStartDTO
 {
   private String loginName;
 
