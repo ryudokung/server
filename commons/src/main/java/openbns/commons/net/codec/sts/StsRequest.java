@@ -15,34 +15,33 @@
  */
 package openbns.commons.net.codec.sts;
 
-
 public interface StsRequest extends StsMessage
 {
 
-    /**
-     * Returns the {@link StsMethod} of this {@link StsRequest}.
-     *
-     * @return The {@link StsMethod} of this {@link StsRequest}
-     */
-    StsMethod getMethod();
+  /**
+   * Returns the {@link StsMethod} of this {@link StsRequest}.
+   *
+   * @return The {@link StsMethod} of this {@link StsRequest}
+   */
+  StsMethod getMethod();
 
-    /**
-     * Set the {@link StsMethod} of this {@link StsRequest}.
-     */
-    StsRequest setMethod( StsMethod method );
+  /**
+   * Set the {@link StsMethod} of this {@link StsRequest}.
+   */
+  StsRequest setMethod( StsMethod method );
 
-    /**
-     * Returns the requested URI (or alternatively, path)
-     *
-     * @return The URI being requested
-     */
-    String getUri();
+  /**
+   * Returns the requested URI (or alternatively, path)
+   *
+   * @return The URI being requested
+   */
+  String getUri();
 
-    /**
-     *  Set the requested URI (or alternatively, path)
-     */
-    StsRequest setUri( String uri );
+  /**
+   * Set the requested URI (or alternatively, path)
+   */
+  StsRequest setUri( String uri );
 
-    @Override
-    StsRequest setProtocolVersion( StsVersion version );
+  @Override
+  StsRequest setProtocolVersion( StsVersion version );
 }

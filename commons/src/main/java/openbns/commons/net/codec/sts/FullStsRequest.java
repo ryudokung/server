@@ -21,21 +21,21 @@ package openbns.commons.net.codec.sts;
  */
 public interface FullStsRequest extends StsRequest, FullStsMessage
 {
-    @Override
-    FullStsRequest copy();
+  @Override
+  FullStsRequest copy();
 
-    @Override
-    FullStsRequest retain( int increment );
+  @Override
+  FullStsRequest retain( int increment );
 
-    @Override
-    FullStsRequest retain();
+  @Override
+  FullStsRequest retain();
 
-    @Override
-    FullStsRequest setProtocolVersion( StsVersion version );
+  @Override
+  FullStsRequest setProtocolVersion( StsVersion version );
 
-    @Override
-    FullStsRequest setMethod( StsMethod method );
+  @Override
+  FullStsRequest setMethod( StsMethod method );
 
-    @Override
-    FullStsRequest setUri( String uri );
+  @Override
+  FullStsRequest setUri( String uri );
 }

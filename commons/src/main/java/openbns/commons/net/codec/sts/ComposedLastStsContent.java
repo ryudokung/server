@@ -21,66 +21,79 @@ import io.netty.handler.codec.DecoderResult;
 
 final class ComposedLastStsContent implements LastStsContent
 {
-    private final StsHeaders trailingHeaders;
-    private DecoderResult result;
+  private final StsHeaders trailingHeaders;
+  private DecoderResult result;
 
-    ComposedLastStsContent( StsHeaders trailingHeaders ) {
-        this.trailingHeaders = trailingHeaders;
-    }
-    @Override
-    public StsHeaders trailingHeaders() {
-        return trailingHeaders;
-    }
+  ComposedLastStsContent( StsHeaders trailingHeaders )
+  {
+    this.trailingHeaders = trailingHeaders;
+  }
 
-    @Override
-    public LastStsContent copy() {
-        LastStsContent content = new DefaultLastStsContent(Unpooled.EMPTY_BUFFER);
-        content.trailingHeaders().set(trailingHeaders());
-        return content;
-    }
+  @Override
+  public StsHeaders trailingHeaders()
+  {
+    return trailingHeaders;
+  }
 
-    @Override
-    public LastStsContent retain(int increment) {
-        return this;
-    }
+  @Override
+  public LastStsContent copy()
+  {
+    LastStsContent content = new DefaultLastStsContent( Unpooled.EMPTY_BUFFER );
+    content.trailingHeaders().set( trailingHeaders() );
+    return content;
+  }
 
-    @Override
-    public LastStsContent retain() {
-        return this;
-    }
+  @Override
+  public LastStsContent retain( int increment )
+  {
+    return this;
+  }
 
-    @Override
-    public StsContent duplicate() {
-        return copy();
-    }
+  @Override
+  public LastStsContent retain()
+  {
+    return this;
+  }
 
-    @Override
-    public ByteBuf content() {
-        return Unpooled.EMPTY_BUFFER;
-    }
+  @Override
+  public StsContent duplicate()
+  {
+    return copy();
+  }
 
-    @Override
-    public DecoderResult getDecoderResult() {
-        return result;
-    }
+  @Override
+  public ByteBuf content()
+  {
+    return Unpooled.EMPTY_BUFFER;
+  }
 
-    @Override
-    public void setDecoderResult(DecoderResult result) {
-        this.result = result;
-    }
+  @Override
+  public DecoderResult getDecoderResult()
+  {
+    return result;
+  }
 
-    @Override
-    public int refCnt() {
-        return 1;
-    }
+  @Override
+  public void setDecoderResult( DecoderResult result )
+  {
+    this.result = result;
+  }
 
-    @Override
-    public boolean release() {
-        return false;
-    }
+  @Override
+  public int refCnt()
+  {
+    return 1;
+  }
 
-    @Override
-    public boolean release(int decrement) {
-        return false;
-    }
+  @Override
+  public boolean release()
+  {
+    return false;
+  }
+
+  @Override
+  public boolean release( int decrement )
+  {
+    return false;
+  }
 }

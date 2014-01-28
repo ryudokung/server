@@ -15,12 +15,11 @@
  */
 package openbns.commons.net.codec.sts;
 
-
 /**
  * An HTTP response.
- *
+ * <p/>
  * <h3>Accessing Cookies</h3>
- * <p>
+ * <p/>
  * Unlike the Servlet API, {@link Cookie} support is provided separately via {@link CookieDecoder},
  * {@link ClientCookieEncoder}, and {@link ServerCookieEncoder}.
  *
@@ -31,18 +30,18 @@ package openbns.commons.net.codec.sts;
 public interface StsResponse extends StsMessage
 {
 
-    /**
-     * Returns the status of this {@link StsResponse}.
-     *
-     * @return The {@link StsResponseStatus} of this {@link StsResponse}
-     */
-    StsResponseStatus getStatus();
+  /**
+   * Returns the status of this {@link StsResponse}.
+   *
+   * @return The {@link StsResponseStatus} of this {@link StsResponse}
+   */
+  StsResponseStatus getStatus();
 
-    /**
-     * Set the status of this {@link StsResponse}.
-     */
-    StsResponse setStatus( StsResponseStatus status );
+  /**
+   * Set the status of this {@link StsResponse}.
+   */
+  StsResponse setStatus( StsResponseStatus status );
 
-    @Override
-    StsResponse setProtocolVersion( StsVersion version );
+  @Override
+  StsResponse setProtocolVersion( StsVersion version );
 }

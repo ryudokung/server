@@ -15,7 +15,6 @@
  */
 package openbns.commons.net.codec.sts;
 
-
 /**
  * An interface that defines a HTTP message, providing common properties for
  * {@link StsRequest} and {@link StsResponse}.
@@ -27,20 +26,20 @@ package openbns.commons.net.codec.sts;
 public interface StsMessage extends StsObject
 {
 
-    /**
-     * Returns the protocol version of this {@link StsMessage}
-     *
-     * @return The protocol version
-     */
-    StsVersion getProtocolVersion();
+  /**
+   * Returns the protocol version of this {@link StsMessage}
+   *
+   * @return The protocol version
+   */
+  StsVersion getProtocolVersion();
 
-    /**
-     * Set the protocol version of this {@link StsMessage}
-     */
-    StsMessage setProtocolVersion( StsVersion version );
+  /**
+   * Set the protocol version of this {@link StsMessage}
+   */
+  StsMessage setProtocolVersion( StsVersion version );
 
-    /**
-     * Returns the headers of this message.
-     */
-    StsHeaders headers();
+  /**
+   * Returns the headers of this message.
+   */
+  StsHeaders headers();
 }

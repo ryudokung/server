@@ -41,185 +41,206 @@ import java.util.List;
  * p.addLast("handler", new HttpRequestHandler());
  * </pre>
  */
-public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject> {
-    public static final int DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS = 1024;
-    private static final FullStsResponse CONTINUE =
-            new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.CONTINUE, Unpooled.EMPTY_BUFFER);
+public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject>
+{
+  public static final int DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS = 1024;
+  private static final FullStsResponse CONTINUE = new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.CONTINUE, Unpooled.EMPTY_BUFFER );
 
-    private final int maxContentLength;
-    private FullStsMessage currentMessage;
-    private boolean tooLongFrameFound;
+  private final int maxContentLength;
+  private FullStsMessage currentMessage;
+  private boolean tooLongFrameFound;
 
-    private int maxCumulationBufferComponents = DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS;
-    private ChannelHandlerContext ctx;
+  private int maxCumulationBufferComponents = DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS;
+  private ChannelHandlerContext ctx;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param maxContentLength
-     *        the maximum length of the aggregated content.
-     *        If the length of the aggregated content exceeds this value,
-     *        a {@link TooLongFrameException} will be raised.
-     */
-    public HttpObjectAggregator(int maxContentLength) {
-        if (maxContentLength <= 0) {
-            throw new IllegalArgumentException(
-                    "maxContentLength must be a positive integer: " +
-                    maxContentLength);
+  /**
+   * Creates a new instance.
+   *
+   * @param maxContentLength the maximum length of the aggregated content.
+   *                         If the length of the aggregated content exceeds this value,
+   *                         a {@link TooLongFrameException} will be raised.
+   */
+  public HttpObjectAggregator( int maxContentLength )
+  {
+    if( maxContentLength <= 0 )
+    {
+      throw new IllegalArgumentException( "maxContentLength must be a positive integer: " + maxContentLength );
+    }
+    this.maxContentLength = maxContentLength;
+  }
+
+  /**
+   * Returns the maximum number of components in the cumulation buffer.  If the number of
+   * the components in the cumulation buffer exceeds this value, the components of the
+   * cumulation buffer are consolidated into a single component, involving memory copies.
+   * The default value of this property is {@link #DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS}.
+   */
+  public final int getMaxCumulationBufferComponents()
+  {
+    return maxCumulationBufferComponents;
+  }
+
+  /**
+   * Sets the maximum number of components in the cumulation buffer.  If the number of
+   * the components in the cumulation buffer exceeds this value, the components of the
+   * cumulation buffer are consolidated into a single component, involving memory copies.
+   * The default value of this property is {@link #DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS}
+   * and its minimum allowed value is {@code 2}.
+   */
+  public final void setMaxCumulationBufferComponents( int maxCumulationBufferComponents )
+  {
+    if( maxCumulationBufferComponents < 2 )
+    {
+      throw new IllegalArgumentException( "maxCumulationBufferComponents: " + maxCumulationBufferComponents +
+                                                  " (expected: >= 2)" );
+    }
+
+    if( ctx == null )
+    {
+      this.maxCumulationBufferComponents = maxCumulationBufferComponents;
+    }
+    else
+    {
+      throw new IllegalStateException( "decoder properties cannot be changed once the decoder is added to a pipeline." );
+    }
+  }
+
+  @Override
+  protected void decode( final ChannelHandlerContext ctx, StsObject msg, List<Object> out ) throws Exception
+  {
+    FullStsMessage currentMessage = this.currentMessage;
+
+    if( msg instanceof StsMessage )
+    {
+      tooLongFrameFound = false;
+      assert currentMessage == null;
+
+      StsMessage m = (StsMessage) msg;
+
+      if( !m.getDecoderResult().isSuccess() )
+      {
+        this.currentMessage = null;
+        out.add( ReferenceCountUtil.retain( m ) );
+        return;
+      }
+      if( msg instanceof StsRequest )
+      {
+        StsRequest header = (StsRequest) msg;
+        this.currentMessage = currentMessage = new DefaultFullStsRequest( header.getProtocolVersion(), header.getMethod(), header.getUri(), Unpooled.compositeBuffer( maxCumulationBufferComponents ) );
+      }
+      else if( msg instanceof StsResponse )
+      {
+        StsResponse header = (StsResponse) msg;
+        this.currentMessage = currentMessage = new DefaultFullStsResponse( header.getProtocolVersion(), header.getStatus(), Unpooled.compositeBuffer( maxCumulationBufferComponents ) );
+      }
+      else
+      {
+        throw new Error();
+      }
+
+      currentMessage.headers().set( m.headers() );
+    }
+    else if( msg instanceof StsContent )
+    {
+      if( tooLongFrameFound )
+      {
+        if( msg instanceof LastStsContent )
+        {
+          this.currentMessage = null;
         }
-        this.maxContentLength = maxContentLength;
-    }
+        // already detect the too long frame so just discard the content
+        return;
+      }
+      assert currentMessage != null;
 
-    /**
-     * Returns the maximum number of components in the cumulation buffer.  If the number of
-     * the components in the cumulation buffer exceeds this value, the components of the
-     * cumulation buffer are consolidated into a single component, involving memory copies.
-     * The default value of this property is {@link #DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS}.
-     */
-    public final int getMaxCumulationBufferComponents() {
-        return maxCumulationBufferComponents;
-    }
+      // Merge the received chunk into the content of the current message.
+      StsContent chunk = (StsContent) msg;
+      CompositeByteBuf content = (CompositeByteBuf) currentMessage.content();
 
-    /**
-     * Sets the maximum number of components in the cumulation buffer.  If the number of
-     * the components in the cumulation buffer exceeds this value, the components of the
-     * cumulation buffer are consolidated into a single component, involving memory copies.
-     * The default value of this property is {@link #DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS}
-     * and its minimum allowed value is {@code 2}.
-     */
-    public final void setMaxCumulationBufferComponents(int maxCumulationBufferComponents) {
-        if (maxCumulationBufferComponents < 2) {
-            throw new IllegalArgumentException(
-                    "maxCumulationBufferComponents: " + maxCumulationBufferComponents +
-                    " (expected: >= 2)");
+      if( content.readableBytes() > maxContentLength - chunk.content().readableBytes() )
+      {
+        tooLongFrameFound = true;
+
+        // release current message to prevent leaks
+        currentMessage.release();
+        this.currentMessage = null;
+
+        throw new TooLongFrameException( "HTTP content length exceeded " + maxContentLength +
+                                                 " bytes." );
+      }
+
+      // Append the content of the chunk
+      if( chunk.content().isReadable() )
+      {
+        chunk.retain();
+        content.addComponent( chunk.content() );
+        content.writerIndex( content.writerIndex() + chunk.content().readableBytes() );
+      }
+
+      final boolean last;
+      if( !chunk.getDecoderResult().isSuccess() )
+      {
+        currentMessage.setDecoderResult( DecoderResult.failure( chunk.getDecoderResult().cause() ) );
+        last = true;
+      }
+      else
+      {
+        last = chunk instanceof LastStsContent;
+      }
+
+      if( last )
+      {
+        this.currentMessage = null;
+
+        // Merge trailing headers into the message.
+        if( chunk instanceof LastStsContent )
+        {
+          LastStsContent trailer = (LastStsContent) chunk;
+          currentMessage.headers().add( trailer.trailingHeaders() );
         }
 
-        if (ctx == null) {
-            this.maxCumulationBufferComponents = maxCumulationBufferComponents;
-        } else {
-            throw new IllegalStateException(
-                    "decoder properties cannot be changed once the decoder is added to a pipeline.");
-        }
+        // Set the 'Content-Length' header.
+        currentMessage.headers().set( StsHeaders.Names.CONTENT_LENGTH, String.valueOf( content.readableBytes() ) );
+
+        // All done
+        out.add( currentMessage );
+      }
     }
-
-    @Override
-    protected void decode(final ChannelHandlerContext ctx, StsObject msg, List<Object> out) throws Exception {
-        FullStsMessage currentMessage = this.currentMessage;
-
-        if (msg instanceof StsMessage ) {
-            tooLongFrameFound = false;
-            assert currentMessage == null;
-
-            StsMessage m = (StsMessage) msg;
-
-            if (!m.getDecoderResult().isSuccess()) {
-                this.currentMessage = null;
-                out.add(ReferenceCountUtil.retain(m));
-                return;
-            }
-            if (msg instanceof StsRequest ) {
-                StsRequest header = (StsRequest) msg;
-                this.currentMessage = currentMessage = new DefaultFullStsRequest(header.getProtocolVersion(),
-                        header.getMethod(), header.getUri(), Unpooled.compositeBuffer(maxCumulationBufferComponents));
-            } else if (msg instanceof StsResponse ) {
-                StsResponse header = (StsResponse) msg;
-                this.currentMessage = currentMessage = new DefaultFullStsResponse(
-                        header.getProtocolVersion(), header.getStatus(),
-                        Unpooled.compositeBuffer(maxCumulationBufferComponents));
-            } else {
-                throw new Error();
-            }
-
-            currentMessage.headers().set(m.headers());
-
-        } else if (msg instanceof StsContent ) {
-            if (tooLongFrameFound) {
-                if (msg instanceof LastStsContent ) {
-                    this.currentMessage = null;
-                }
-                // already detect the too long frame so just discard the content
-                return;
-            }
-            assert currentMessage != null;
-
-            // Merge the received chunk into the content of the current message.
-            StsContent chunk = (StsContent) msg;
-            CompositeByteBuf content = (CompositeByteBuf) currentMessage.content();
-
-            if (content.readableBytes() > maxContentLength - chunk.content().readableBytes()) {
-                tooLongFrameFound = true;
-
-                // release current message to prevent leaks
-                currentMessage.release();
-                this.currentMessage = null;
-
-                throw new TooLongFrameException(
-                        "HTTP content length exceeded " + maxContentLength +
-                        " bytes.");
-            }
-
-            // Append the content of the chunk
-            if (chunk.content().isReadable()) {
-                chunk.retain();
-                content.addComponent(chunk.content());
-                content.writerIndex(content.writerIndex() + chunk.content().readableBytes());
-            }
-
-            final boolean last;
-            if (!chunk.getDecoderResult().isSuccess()) {
-                currentMessage.setDecoderResult(
-                        DecoderResult.failure(chunk.getDecoderResult().cause()));
-                last = true;
-            } else {
-                last = chunk instanceof LastStsContent;
-            }
-
-            if (last) {
-                this.currentMessage = null;
-
-                // Merge trailing headers into the message.
-                if (chunk instanceof LastStsContent ) {
-                    LastStsContent trailer = (LastStsContent) chunk;
-                    currentMessage.headers().add(trailer.trailingHeaders());
-                }
-
-                // Set the 'Content-Length' header.
-                currentMessage.headers().set(
-                        StsHeaders.Names.CONTENT_LENGTH,
-                        String.valueOf(content.readableBytes()));
-
-                // All done
-                out.add(currentMessage);
-            }
-        } else {
-            throw new Error();
-        }
+    else
+    {
+      throw new Error();
     }
+  }
 
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
+  @Override
+  public void channelInactive( ChannelHandlerContext ctx ) throws Exception
+  {
+    super.channelInactive( ctx );
 
-        // release current message if it is not null as it may be a left-over
-        if (currentMessage != null) {
-            currentMessage.release();
-            currentMessage = null;
-        }
+    // release current message if it is not null as it may be a left-over
+    if( currentMessage != null )
+    {
+      currentMessage.release();
+      currentMessage = null;
     }
+  }
 
-    @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        this.ctx = ctx;
-    }
+  @Override
+  public void handlerAdded( ChannelHandlerContext ctx ) throws Exception
+  {
+    this.ctx = ctx;
+  }
 
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        super.handlerRemoved(ctx);
-        // release current message if it is not null as it may be a left-over as there is not much more we can do in
-        // this case
-        if (currentMessage != null) {
-            currentMessage.release();
-            currentMessage = null;
-        }
+  @Override
+  public void handlerRemoved( ChannelHandlerContext ctx ) throws Exception
+  {
+    super.handlerRemoved( ctx );
+    // release current message if it is not null as it may be a left-over as there is not much more we can do in
+    // this case
+    if( currentMessage != null )
+    {
+      currentMessage.release();
+      currentMessage = null;
     }
+  }
 }

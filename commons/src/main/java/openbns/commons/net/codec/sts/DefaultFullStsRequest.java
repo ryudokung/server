@@ -23,99 +23,113 @@ import io.netty.buffer.Unpooled;
  */
 public class DefaultFullStsRequest extends DefaultStsRequest implements FullStsRequest
 {
-    private final ByteBuf content;
-    private final StsHeaders trailingHeader;
-    private final boolean validateHeaders;
+  private final ByteBuf content;
+  private final StsHeaders trailingHeader;
+  private final boolean validateHeaders;
 
-    public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri ) {
-        this( stsVersion, method, uri, Unpooled.buffer(0));
-    }
+  public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri )
+  {
+    this( stsVersion, method, uri, Unpooled.buffer( 0 ) );
+  }
 
-    public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri, ByteBuf content ) {
-        this( stsVersion, method, uri, content, true);
-    }
+  public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri, ByteBuf content )
+  {
+    this( stsVersion, method, uri, content, true );
+  }
 
-    public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri, ByteBuf content,
-                                  boolean validateHeaders ) {
-        super( stsVersion, method, uri, validateHeaders);
-        if (content == null) {
-            throw new NullPointerException("content");
-        }
-        this.content = content;
-        trailingHeader = new DefaultStsHeaders(validateHeaders);
-        this.validateHeaders = validateHeaders;
+  public DefaultFullStsRequest( StsVersion stsVersion, StsMethod method, String uri, ByteBuf content,
+                                boolean validateHeaders )
+  {
+    super( stsVersion, method, uri, validateHeaders );
+    if( content == null )
+    {
+      throw new NullPointerException( "content" );
     }
+    this.content = content;
+    trailingHeader = new DefaultStsHeaders( validateHeaders );
+    this.validateHeaders = validateHeaders;
+  }
 
-    @Override
-    public StsHeaders trailingHeaders() {
-        return trailingHeader;
-    }
+  @Override
+  public StsHeaders trailingHeaders()
+  {
+    return trailingHeader;
+  }
 
-    @Override
-    public ByteBuf content() {
-        return content;
-    }
+  @Override
+  public ByteBuf content()
+  {
+    return content;
+  }
 
-    @Override
-    public int refCnt() {
-        return content.refCnt();
-    }
+  @Override
+  public int refCnt()
+  {
+    return content.refCnt();
+  }
 
-    @Override
-    public FullStsRequest retain() {
-        content.retain();
-        return this;
-    }
+  @Override
+  public FullStsRequest retain()
+  {
+    content.retain();
+    return this;
+  }
 
-    @Override
-    public FullStsRequest retain(int increment) {
-        content.retain(increment);
-        return this;
-    }
+  @Override
+  public FullStsRequest retain( int increment )
+  {
+    content.retain( increment );
+    return this;
+  }
 
-    @Override
-    public boolean release() {
-        return content.release();
-    }
+  @Override
+  public boolean release()
+  {
+    return content.release();
+  }
 
-    @Override
-    public boolean release(int decrement) {
-        return content.release(decrement);
-    }
+  @Override
+  public boolean release( int decrement )
+  {
+    return content.release( decrement );
+  }
 
-    @Override
-    public FullStsRequest setProtocolVersion(StsVersion version) {
-        super.setProtocolVersion(version);
-        return this;
-    }
+  @Override
+  public FullStsRequest setProtocolVersion( StsVersion version )
+  {
+    super.setProtocolVersion( version );
+    return this;
+  }
 
-    @Override
-    public FullStsRequest setMethod(StsMethod method) {
-        super.setMethod(method);
-        return this;
-    }
+  @Override
+  public FullStsRequest setMethod( StsMethod method )
+  {
+    super.setMethod( method );
+    return this;
+  }
 
-    @Override
-    public FullStsRequest setUri(String uri) {
-        super.setUri(uri);
-        return this;
-    }
+  @Override
+  public FullStsRequest setUri( String uri )
+  {
+    super.setUri( uri );
+    return this;
+  }
 
-    @Override
-    public FullStsRequest copy() {
-        DefaultFullStsRequest copy = new DefaultFullStsRequest(
-                getProtocolVersion(), getMethod(), getUri(), content().copy(), validateHeaders);
-        copy.headers().set(headers());
-        copy.trailingHeaders().set(trailingHeaders());
-        return copy;
-    }
+  @Override
+  public FullStsRequest copy()
+  {
+    DefaultFullStsRequest copy = new DefaultFullStsRequest( getProtocolVersion(), getMethod(), getUri(), content().copy(), validateHeaders );
+    copy.headers().set( headers() );
+    copy.trailingHeaders().set( trailingHeaders() );
+    return copy;
+  }
 
-    @Override
-    public FullStsRequest duplicate() {
-        DefaultFullStsRequest duplicate = new DefaultFullStsRequest(
-                getProtocolVersion(), getMethod(), getUri(), content().duplicate(), validateHeaders);
-        duplicate.headers().set(headers());
-        duplicate.trailingHeaders().set(trailingHeaders());
-        return duplicate;
-    }
+  @Override
+  public FullStsRequest duplicate()
+  {
+    DefaultFullStsRequest duplicate = new DefaultFullStsRequest( getProtocolVersion(), getMethod(), getUri(), content().duplicate(), validateHeaders );
+    duplicate.headers().set( headers() );
+    duplicate.trailingHeaders().set( trailingHeaders() );
+    return duplicate;
+  }
 }

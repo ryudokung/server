@@ -20,32 +20,33 @@ import io.netty.channel.CombinedChannelDuplexHandler;
 /**
  * A combination of {@link StsRequestDecoder} and {@link StsResponseEncoder}
  * which enables easier server side HTTP implementation.
- *
  */
-public final class StsServerCodec
-        extends CombinedChannelDuplexHandler<StsRequestDecoder, StsResponseEncoder> {
+public final class StsServerCodec extends CombinedChannelDuplexHandler<StsRequestDecoder, StsResponseEncoder>
+{
 
-    /**
-     * Creates a new instance with the default decoder options
-     * ({@code maxInitialLineLength (4096}}, {@code maxHeaderSize (8192)}, and
-     * {@code maxChunkSize (8192)}).
-     */
-    public StsServerCodec() {
-        this(4096, 8192, 8192);
-    }
+  /**
+   * Creates a new instance with the default decoder options
+   * ({@code maxInitialLineLength (4096}}, {@code maxHeaderSize (8192)}, and
+   * {@code maxChunkSize (8192)}).
+   */
+  public StsServerCodec()
+  {
+    this( 4096, 8192, 8192 );
+  }
 
-    /**
-     * Creates a new instance with the specified decoder options.
-     */
-    public StsServerCodec( int maxInitialLineLength, int maxHeaderSize, int maxChunkSize ) {
-        super(new StsRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize), new StsResponseEncoder());
-    }
+  /**
+   * Creates a new instance with the specified decoder options.
+   */
+  public StsServerCodec( int maxInitialLineLength, int maxHeaderSize, int maxChunkSize )
+  {
+    super( new StsRequestDecoder( maxInitialLineLength, maxHeaderSize, maxChunkSize ), new StsResponseEncoder() );
+  }
 
-    /**
-     * Creates a new instance with the specified decoder options.
-     */
-    public StsServerCodec( int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders ) {
-        super(new StsRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize, validateHeaders),
-                new StsResponseEncoder());
-    }
+  /**
+   * Creates a new instance with the specified decoder options.
+   */
+  public StsServerCodec( int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders )
+  {
+    super( new StsRequestDecoder( maxInitialLineLength, maxHeaderSize, maxChunkSize, validateHeaders ), new StsResponseEncoder() );
+  }
 }

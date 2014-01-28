@@ -19,14 +19,14 @@ import io.netty.handler.codec.DecoderResult;
 
 public interface StsObject
 {
-    /**
-     * Returns the result of decoding this message.
-     */
-    DecoderResult getDecoderResult();
+  /**
+   * Returns the result of decoding this message.
+   */
+  DecoderResult getDecoderResult();
 
-    /**
-     * Updates the result of decoding this message. This method is supposed to be invoked by {@link HttpObjectDecoder}.
-     * Do not call this method unless you know what you are doing.
-     */
-    void setDecoderResult( DecoderResult result );
+  /**
+   * Updates the result of decoding this message. This method is supposed to be invoked by {@link HttpObjectDecoder}.
+   * Do not call this method unless you know what you are doing.
+   */
+  void setDecoderResult( DecoderResult result );
 }

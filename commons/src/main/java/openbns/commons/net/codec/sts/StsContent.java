@@ -25,16 +25,17 @@ import io.netty.buffer.ByteBufHolder;
  * place {@link HttpObjectAggregator} after {@link HttpObjectDecoder} in the
  * {@link io.netty.channel.ChannelPipeline}.
  */
-public interface StsContent extends StsObject, ByteBufHolder {
-    @Override
-    StsContent copy();
+public interface StsContent extends StsObject, ByteBufHolder
+{
+  @Override
+  StsContent copy();
 
-    @Override
-    StsContent duplicate();
+  @Override
+  StsContent duplicate();
 
-    @Override
-    StsContent retain();
+  @Override
+  StsContent retain();
 
-    @Override
-    StsContent retain( int increment );
+  @Override
+  StsContent retain( int increment );
 }

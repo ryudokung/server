@@ -25,64 +25,74 @@ import java.util.Map;
 public abstract class DefaultStsMessage extends DefaultStsObject implements StsMessage
 {
 
-    private StsVersion version;
-    private final StsHeaders headers;
+  private StsVersion version;
+  private final StsHeaders headers;
 
-    /**
-     * Creates a new instance.
-     */
-    protected DefaultStsMessage( final StsVersion version ) {
-        this(version, true);
+  /**
+   * Creates a new instance.
+   */
+  protected DefaultStsMessage( final StsVersion version )
+  {
+    this( version, true );
+  }
+
+  protected DefaultStsMessage( final StsVersion version, boolean validate )
+  {
+    if( version == null )
+    {
+      throw new NullPointerException( "version" );
     }
+    this.version = version;
+    headers = new DefaultStsHeaders( validate );
+  }
 
-    protected DefaultStsMessage( final StsVersion version, boolean validate ) {
-        if (version == null) {
-            throw new NullPointerException("version");
-        }
-        this.version = version;
-        headers = new DefaultStsHeaders(validate);
+  @Override
+  public StsHeaders headers()
+  {
+    return headers;
+  }
+
+  @Override
+  public StsVersion getProtocolVersion()
+  {
+    return version;
+  }
+
+  @Override
+  public String toString()
+  {
+    StringBuilder buf = new StringBuilder();
+    buf.append( StringUtil.simpleClassName( this ) );
+    buf.append( "(version: " );
+    buf.append( getProtocolVersion().text() );
+    buf.append( ')' );
+    buf.append( StringUtil.NEWLINE );
+    appendHeaders( buf );
+
+    // Remove the last newline.
+    buf.setLength( buf.length() - StringUtil.NEWLINE.length() );
+    return buf.toString();
+  }
+
+  @Override
+  public StsMessage setProtocolVersion( StsVersion version )
+  {
+    if( version == null )
+    {
+      throw new NullPointerException( "version" );
     }
+    this.version = version;
+    return this;
+  }
 
-    @Override
-    public StsHeaders headers() {
-        return headers;
+  void appendHeaders( StringBuilder buf )
+  {
+    for( Map.Entry<String, String> e : headers() )
+    {
+      buf.append( e.getKey() );
+      buf.append( ": " );
+      buf.append( e.getValue() );
+      buf.append( StringUtil.NEWLINE );
     }
-
-    @Override
-    public StsVersion getProtocolVersion() {
-        return version;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(StringUtil.simpleClassName(this));
-        buf.append("(version: ");
-        buf.append(getProtocolVersion().text());
-        buf.append(')');
-        buf.append(StringUtil.NEWLINE);
-        appendHeaders(buf);
-
-        // Remove the last newline.
-        buf.setLength(buf.length() - StringUtil.NEWLINE.length());
-        return buf.toString();
-    }
-
-    @Override
-    public StsMessage setProtocolVersion(StsVersion version) {
-        if (version == null) {
-            throw new NullPointerException("version");
-        }
-        this.version = version;
-        return this;
-    }
-
-    void appendHeaders(StringBuilder buf) {
-        for (Map.Entry<String, String> e: headers()) {
-            buf.append(e.getKey());
-            buf.append(": ");
-            buf.append(e.getValue());
-            buf.append(StringUtil.NEWLINE);
-        }
-    }
+  }
 }

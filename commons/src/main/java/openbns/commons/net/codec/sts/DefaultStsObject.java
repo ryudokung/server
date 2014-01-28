@@ -20,22 +20,26 @@ import io.netty.handler.codec.DecoderResult;
 public class DefaultStsObject implements StsObject
 {
 
-    private DecoderResult decoderResult = DecoderResult.SUCCESS;
+  private DecoderResult decoderResult = DecoderResult.SUCCESS;
 
-    protected DefaultStsObject() {
-        // Disallow direct instantiation
-    }
+  protected DefaultStsObject()
+  {
+    // Disallow direct instantiation
+  }
 
-    @Override
-    public DecoderResult getDecoderResult() {
-        return decoderResult;
-    }
+  @Override
+  public DecoderResult getDecoderResult()
+  {
+    return decoderResult;
+  }
 
-    @Override
-    public void setDecoderResult(DecoderResult decoderResult) {
-        if (decoderResult == null) {
-            throw new NullPointerException("decoderResult");
-        }
-        this.decoderResult = decoderResult;
+  @Override
+  public void setDecoderResult( DecoderResult decoderResult )
+  {
+    if( decoderResult == null )
+    {
+      throw new NullPointerException( "decoderResult" );
     }
+    this.decoderResult = decoderResult;
+  }
 }

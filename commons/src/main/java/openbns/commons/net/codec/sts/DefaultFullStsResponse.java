@@ -24,93 +24,106 @@ import io.netty.buffer.Unpooled;
 public class DefaultFullStsResponse extends DefaultStsResponse implements FullStsResponse
 {
 
-    private final ByteBuf content;
-    private final StsHeaders trailingHeaders;
-    private final boolean validateHeaders;
+  private final ByteBuf content;
+  private final StsHeaders trailingHeaders;
+  private final boolean validateHeaders;
 
-    public DefaultFullStsResponse( StsVersion version, StsResponseStatus status ) {
-        this(version, status, Unpooled.buffer(0));
-    }
+  public DefaultFullStsResponse( StsVersion version, StsResponseStatus status )
+  {
+    this( version, status, Unpooled.buffer( 0 ) );
+  }
 
-    public DefaultFullStsResponse( StsVersion version, StsResponseStatus status, ByteBuf content ) {
-        this(version, status, content, true);
-    }
+  public DefaultFullStsResponse( StsVersion version, StsResponseStatus status, ByteBuf content )
+  {
+    this( version, status, content, true );
+  }
 
-    public DefaultFullStsResponse( StsVersion version, StsResponseStatus status, ByteBuf content,
-                                   boolean validateHeaders ) {
-        super(version, status, validateHeaders);
-        if (content == null) {
-            throw new NullPointerException("content");
-        }
-        this.content = content;
-        trailingHeaders = new DefaultStsHeaders(validateHeaders);
-        this.validateHeaders = validateHeaders;
+  public DefaultFullStsResponse( StsVersion version, StsResponseStatus status, ByteBuf content,
+                                 boolean validateHeaders )
+  {
+    super( version, status, validateHeaders );
+    if( content == null )
+    {
+      throw new NullPointerException( "content" );
     }
+    this.content = content;
+    trailingHeaders = new DefaultStsHeaders( validateHeaders );
+    this.validateHeaders = validateHeaders;
+  }
 
-    @Override
-    public StsHeaders trailingHeaders() {
-        return trailingHeaders;
-    }
+  @Override
+  public StsHeaders trailingHeaders()
+  {
+    return trailingHeaders;
+  }
 
-    @Override
-    public ByteBuf content() {
-        return content;
-    }
+  @Override
+  public ByteBuf content()
+  {
+    return content;
+  }
 
-    @Override
-    public int refCnt() {
-        return content.refCnt();
-    }
+  @Override
+  public int refCnt()
+  {
+    return content.refCnt();
+  }
 
-    @Override
-    public FullStsResponse retain() {
-        content.retain();
-        return this;
-    }
+  @Override
+  public FullStsResponse retain()
+  {
+    content.retain();
+    return this;
+  }
 
-    @Override
-    public FullStsResponse retain(int increment) {
-        content.retain(increment);
-        return this;
-    }
+  @Override
+  public FullStsResponse retain( int increment )
+  {
+    content.retain( increment );
+    return this;
+  }
 
-    @Override
-    public boolean release() {
-        return content.release();
-    }
+  @Override
+  public boolean release()
+  {
+    return content.release();
+  }
 
-    @Override
-    public boolean release(int decrement) {
-        return content.release(decrement);
-    }
+  @Override
+  public boolean release( int decrement )
+  {
+    return content.release( decrement );
+  }
 
-    @Override
-    public FullStsResponse setProtocolVersion(StsVersion version) {
-        super.setProtocolVersion(version);
-        return this;
-    }
+  @Override
+  public FullStsResponse setProtocolVersion( StsVersion version )
+  {
+    super.setProtocolVersion( version );
+    return this;
+  }
 
-    @Override
-    public FullStsResponse setStatus(StsResponseStatus status) {
-        super.setStatus(status);
-        return this;
-    }
+  @Override
+  public FullStsResponse setStatus( StsResponseStatus status )
+  {
+    super.setStatus( status );
+    return this;
+  }
 
-    @Override
-    public FullStsResponse copy() {
-        DefaultFullStsResponse copy = new DefaultFullStsResponse(
-                getProtocolVersion(), getStatus(), content().copy(), validateHeaders);
-        copy.headers().set(headers());
-        copy.trailingHeaders().set(trailingHeaders());
-        return copy;
-    }
+  @Override
+  public FullStsResponse copy()
+  {
+    DefaultFullStsResponse copy = new DefaultFullStsResponse( getProtocolVersion(), getStatus(), content().copy(), validateHeaders );
+    copy.headers().set( headers() );
+    copy.trailingHeaders().set( trailingHeaders() );
+    return copy;
+  }
 
-    @Override
-    public FullStsResponse duplicate() {
-        DefaultFullStsResponse duplicate = new DefaultFullStsResponse(getProtocolVersion(), getStatus(),
-                content().duplicate(), validateHeaders);
-        duplicate.headers().set(headers());
-        duplicate.trailingHeaders().set(trailingHeaders());
-        return duplicate;
-    }
+  @Override
+  public FullStsResponse duplicate()
+  {
+    DefaultFullStsResponse duplicate = new DefaultFullStsResponse( getProtocolVersion(), getStatus(), content().duplicate(), validateHeaders );
+    duplicate.headers().set( headers() );
+    duplicate.trailingHeaders().set( trailingHeaders() );
+    return duplicate;
+  }
 }

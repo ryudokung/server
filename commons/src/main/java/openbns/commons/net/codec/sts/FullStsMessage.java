@@ -21,12 +21,12 @@ package openbns.commons.net.codec.sts;
  */
 public interface FullStsMessage extends StsMessage, LastStsContent
 {
-    @Override
-    FullStsMessage copy();
+  @Override
+  FullStsMessage copy();
 
-    @Override
-    FullStsMessage retain( int increment );
+  @Override
+  FullStsMessage retain( int increment );
 
-    @Override
-    FullStsMessage retain();
+  @Override
+  FullStsMessage retain();
 }

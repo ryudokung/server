@@ -21,18 +21,18 @@ package openbns.commons.net.codec.sts;
  */
 public interface FullStsResponse extends StsResponse, FullStsMessage
 {
-    @Override
-    FullStsResponse copy();
+  @Override
+  FullStsResponse copy();
 
-    @Override
-    FullStsResponse retain( int increment );
+  @Override
+  FullStsResponse retain( int increment );
 
-    @Override
-    FullStsResponse retain();
+  @Override
+  FullStsResponse retain();
 
-    @Override
-    FullStsResponse setProtocolVersion( StsVersion version );
+  @Override
+  FullStsResponse setProtocolVersion( StsVersion version );
 
-    @Override
-    FullStsResponse setStatus( StsResponseStatus status );
+  @Override
+  FullStsResponse setStatus( StsResponseStatus status );
 }

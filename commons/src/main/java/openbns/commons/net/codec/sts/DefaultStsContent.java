@@ -24,63 +24,74 @@ import io.netty.util.internal.StringUtil;
 public class DefaultStsContent extends DefaultStsObject implements StsContent
 {
 
-    private final ByteBuf content;
+  private final ByteBuf content;
 
-    /**
-     * Creates a new instance with the specified chunk content.
-     */
-    public DefaultStsContent( ByteBuf content ) {
-        if (content == null) {
-            throw new NullPointerException("content");
-        }
-        this.content = content;
+  /**
+   * Creates a new instance with the specified chunk content.
+   */
+  public DefaultStsContent( ByteBuf content )
+  {
+    if( content == null )
+    {
+      throw new NullPointerException( "content" );
     }
+    this.content = content;
+  }
 
-    @Override
-    public ByteBuf content() {
-        return content;
-    }
+  @Override
+  public ByteBuf content()
+  {
+    return content;
+  }
 
-    @Override
-    public StsContent copy() {
-        return new DefaultStsContent(content.copy());
-    }
+  @Override
+  public StsContent copy()
+  {
+    return new DefaultStsContent( content.copy() );
+  }
 
-    @Override
-    public StsContent duplicate() {
-        return new DefaultStsContent(content.duplicate());
-    }
+  @Override
+  public StsContent duplicate()
+  {
+    return new DefaultStsContent( content.duplicate() );
+  }
 
-    @Override
-    public int refCnt() {
-        return content.refCnt();
-    }
+  @Override
+  public int refCnt()
+  {
+    return content.refCnt();
+  }
 
-    @Override
-    public StsContent retain() {
-        content.retain();
-        return this;
-    }
+  @Override
+  public StsContent retain()
+  {
+    content.retain();
+    return this;
+  }
 
-    @Override
-    public StsContent retain(int increment) {
-        content.retain(increment);
-        return this;
-    }
+  @Override
+  public StsContent retain( int increment )
+  {
+    content.retain( increment );
+    return this;
+  }
 
-    @Override
-    public boolean release() {
-        return content.release();
-    }
+  @Override
+  public boolean release()
+  {
+    return content.release();
+  }
 
-    @Override
-    public boolean release(int decrement) {
-        return content.release(decrement);
-    }
+  @Override
+  public boolean release( int decrement )
+  {
+    return content.release( decrement );
+  }
 
-    @Override
-    public String toString() {
-        return StringUtil.simpleClassName(this) +
-               "(data: " + content() + ", getDecoderResult: " + getDecoderResult() + ')';
-    }
+  @Override
+  public String toString()
+  {
+    return StringUtil.simpleClassName( this ) +
+            "(data: " + content() + ", getDecoderResult: " + getDecoderResult() + ')';
+  }
 }

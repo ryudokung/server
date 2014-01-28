@@ -18,43 +18,51 @@ package openbns.commons.net.codec.sts;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 
-final class HttpHeaderEntity implements CharSequence {
+final class HttpHeaderEntity implements CharSequence
+{
 
-    private final String name;
-    private final int hash;
-    private final byte[] bytes;
+  private final String name;
+  private final int hash;
+  private final byte[] bytes;
 
-    public HttpHeaderEntity(String name) {
-        this.name = name;
-        hash = StsHeaders.hash( name );
-        bytes = name.getBytes(CharsetUtil.US_ASCII);
-    }
+  public HttpHeaderEntity( String name )
+  {
+    this.name = name;
+    hash = StsHeaders.hash( name );
+    bytes = name.getBytes( CharsetUtil.US_ASCII );
+  }
 
-    int hash() {
-        return hash;
-    }
+  int hash()
+  {
+    return hash;
+  }
 
-    @Override
-    public int length() {
-        return bytes.length;
-    }
+  @Override
+  public int length()
+  {
+    return bytes.length;
+  }
 
-    @Override
-    public char charAt(int index) {
-        return (char) bytes[index];
-    }
+  @Override
+  public char charAt( int index )
+  {
+    return (char) bytes[ index ];
+  }
 
-    @Override
-    public CharSequence subSequence(int start, int end) {
-        return new HttpHeaderEntity(name.substring(start, end));
-    }
+  @Override
+  public CharSequence subSequence( int start, int end )
+  {
+    return new HttpHeaderEntity( name.substring( start, end ) );
+  }
 
-    @Override
-    public String toString() {
-        return name;
-    }
+  @Override
+  public String toString()
+  {
+    return name;
+  }
 
-    void encode(ByteBuf buf) {
-        buf.writeBytes(bytes);
-    }
+  void encode( ByteBuf buf )
+  {
+    buf.writeBytes( bytes );
+  }
 }

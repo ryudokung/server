@@ -25,75 +25,87 @@ import io.netty.handler.codec.DecoderResult;
 public interface LastStsContent extends StsContent
 {
 
-    /**
-     * The 'end of content' marker in chunked encoding.
-     */
-    LastStsContent EMPTY_LAST_CONTENT = new LastStsContent() {
-
-        @Override
-        public ByteBuf content() {
-            return Unpooled.EMPTY_BUFFER;
-        }
-
-        @Override
-        public LastStsContent copy() {
-            return EMPTY_LAST_CONTENT;
-        }
-
-        @Override
-        public LastStsContent duplicate() {
-            return this;
-        }
-
-        @Override
-        public StsHeaders trailingHeaders() {
-            return StsHeaders.EMPTY_HEADERS;
-        }
-
-        @Override
-        public DecoderResult getDecoderResult() {
-            return DecoderResult.SUCCESS;
-        }
-
-        @Override
-        public void setDecoderResult(DecoderResult result) {
-            throw new UnsupportedOperationException("read only");
-        }
-
-        @Override
-        public int refCnt() {
-            return 1;
-        }
-
-        @Override
-        public LastStsContent retain() {
-            return this;
-        }
-
-        @Override
-        public LastStsContent retain(int increment) {
-            return this;
-        }
-
-        @Override
-        public boolean release() {
-            return false;
-        }
-
-        @Override
-        public boolean release(int decrement) {
-            return false;
-        }
-    };
-
-    StsHeaders trailingHeaders();
+  /**
+   * The 'end of content' marker in chunked encoding.
+   */
+  LastStsContent EMPTY_LAST_CONTENT = new LastStsContent()
+  {
 
     @Override
-    LastStsContent copy();
+    public ByteBuf content()
+    {
+      return Unpooled.EMPTY_BUFFER;
+    }
 
     @Override
-    LastStsContent retain( int increment );
+    public LastStsContent copy()
+    {
+      return EMPTY_LAST_CONTENT;
+    }
 
     @Override
-    LastStsContent retain();
+    public LastStsContent duplicate()
+    {
+      return this;
+    }
+
+    @Override
+    public StsHeaders trailingHeaders()
+    {
+      return StsHeaders.EMPTY_HEADERS;
+    }
+
+    @Override
+    public DecoderResult getDecoderResult()
+    {
+      return DecoderResult.SUCCESS;
+    }
+
+    @Override
+    public void setDecoderResult( DecoderResult result )
+    {
+      throw new UnsupportedOperationException( "read only" );
+    }
+
+    @Override
+    public int refCnt()
+    {
+      return 1;
+    }
+
+    @Override
+    public LastStsContent retain()
+    {
+      return this;
+    }
+
+    @Override
+    public LastStsContent retain( int increment )
+    {
+      return this;
+    }
+
+    @Override
+    public boolean release()
+    {
+      return false;
+    }
+
+    @Override
+    public boolean release( int decrement )
+    {
+      return false;
+    }
+  };
+
+  StsHeaders trailingHeaders();
+
+  @Override
+  LastStsContent copy();
+
+  @Override
+  LastStsContent retain( int increment );
+
+  @Override
+  LastStsContent retain();
 }
