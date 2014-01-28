@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBufInputStream;
 import openbns.commons.xml.StsXStream;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.LoginStartDTO;
+import openbns.loginserver.net.server.dto.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

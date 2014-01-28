@@ -1,4 +1,4 @@
-package openbns.loginserver.net.server;
+package openbns.loginserver.net.server.dto;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * Time: 1:14
  */
 @XStreamAlias( "Error" )
-public class ReplyError
+public class ReplyErrorDTO implements IResponseDTO
 {
   @XStreamAsAttribute
   private int code;

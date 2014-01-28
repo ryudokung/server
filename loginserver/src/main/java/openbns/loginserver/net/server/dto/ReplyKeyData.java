@@ -1,4 +1,4 @@
-package openbns.loginserver.net.server;
+package openbns.loginserver.net.server.dto;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Time: 15:52
  */
 @XStreamAlias( "Reply" )
-public class ReplyKeyData
+public class ReplyKeyData implements IResponseDTO
 {
   @XStreamAlias( "KeyData" )
   private String keyData;
