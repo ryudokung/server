@@ -113,7 +113,6 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject> {
             StsMessage m = (StsMessage) msg;
 
             if (!m.getDecoderResult().isSuccess()) {
-                StsHeaders.removeTransferEncodingChunked( m );
                 this.currentMessage = null;
                 out.add(ReferenceCountUtil.retain(m));
                 return;
@@ -133,8 +132,6 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject> {
 
             currentMessage.headers().set(m.headers());
 
-            // A streamed message - initialize the cumulative buffer, and wait for incoming chunks.
-            StsHeaders.removeTransferEncodingChunked( currentMessage );
         } else if (msg instanceof StsContent ) {
             if (tooLongFrameFound) {
                 if (msg instanceof LastStsContent ) {

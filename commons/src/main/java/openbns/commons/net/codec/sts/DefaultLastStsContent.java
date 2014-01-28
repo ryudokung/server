@@ -104,9 +104,7 @@ public class DefaultLastStsContent extends DefaultStsContent implements LastStsC
         @Override
         void validateHeaderName0(CharSequence name) {
             super.validateHeaderName0(name);
-            if ( equalsIgnoreCase( StsHeaders.Names.CONTENT_LENGTH, name ) ||
-                    equalsIgnoreCase( StsHeaders.Names.TRANSFER_ENCODING, name ) ||
-                    equalsIgnoreCase( StsHeaders.Names.TRAILER, name )) {
+            if ( equalsIgnoreCase( StsHeaders.Names.CONTENT_LENGTH, name )) {
                 throw new IllegalArgumentException(
                         "prohibited trailing header: " + name);
             }

@@ -28,15 +28,6 @@ import java.util.Map;
  */
 public class StsMethod implements Comparable<StsMethod> {
     /**
-     * The OPTIONS getMethod represents a request for information about the communication options
-     * available on the request/response chain identified by the Request-URI. This getMethod allows
-     * the client to determine the options and/or requirements associated with a resource, or the
-     * capabilities of a server, without implying a resource action or initiating a resource
-     * retrieval.
-     */
-    public static final StsMethod OPTIONS = new StsMethod("OPTIONS", true);
-
-    /**
      * The GET getMethod means retrieve whatever information (in the form of an entity) is identified
      * by the Request-URI.  If the Request-URI refers to a data-producing process, it is the
      * produced data which shall be returned as the entity in the response and not the source text
@@ -45,60 +36,18 @@ public class StsMethod implements Comparable<StsMethod> {
     public static final StsMethod GET = new StsMethod("GET", true);
 
     /**
-     * The HEAD getMethod is identical to GET except that the server MUST NOT return a message-body
-     * in the response.
-     */
-    public static final StsMethod HEAD = new StsMethod("HEAD", true);
-
-    /**
      * The POST getMethod is used to request that the origin server accept the entity enclosed in the
      * request as a new subordinate of the resource identified by the Request-URI in the
      * Request-Line.
      */
     public static final StsMethod POST = new StsMethod("POST", true);
 
-    /**
-     * The PUT getMethod requests that the enclosed entity be stored under the supplied Request-URI.
-     */
-    public static final StsMethod PUT = new StsMethod("PUT", true);
-
-    /**
-     * The PATCH getMethod requests that a set of changes described in the
-     * request entity be applied to the resource identified by the Request-URI.
-     */
-    public static final StsMethod PATCH = new StsMethod("PATCH", true);
-
-    /**
-     * The DELETE getMethod requests that the origin server delete the resource identified by the
-     * Request-URI.
-     */
-    public static final StsMethod DELETE = new StsMethod("DELETE", true);
-
-    /**
-     * The TRACE getMethod is used to invoke a remote, application-layer loop- back of the request
-     * message.
-     */
-    public static final StsMethod TRACE = new StsMethod("TRACE", true);
-
-    /**
-     * This specification reserves the getMethod name CONNECT for use with a proxy that can dynamically
-     * switch to being a tunnel
-     */
-    public static final StsMethod CONNECT = new StsMethod("CONNECT", true);
 
     private static final Map<String, StsMethod> methodMap =
             new HashMap<String, StsMethod>();
 
     static {
-        methodMap.put(OPTIONS.toString(), OPTIONS);
-        methodMap.put(GET.toString(), GET);
-        methodMap.put(HEAD.toString(), HEAD);
         methodMap.put(POST.toString(), POST);
-        methodMap.put(PUT.toString(), PUT);
-        methodMap.put(PATCH.toString(), PATCH);
-        methodMap.put(DELETE.toString(), DELETE);
-        methodMap.put(TRACE.toString(), TRACE);
-        methodMap.put(CONNECT.toString(), CONNECT);
     }
 
     /**

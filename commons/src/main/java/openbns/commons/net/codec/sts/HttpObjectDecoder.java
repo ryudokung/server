@@ -493,10 +493,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
         State nextState;
 
         if (isContentAlwaysEmpty(message)) {
-            StsHeaders.removeTransferEncodingChunked( message );
             nextState = State.SKIP_CONTROL_CHARS;
-        } else if ( StsHeaders.isTransferEncodingChunked( message )) {
-            nextState = State.READ_CHUNK_SIZE;
         } else if (contentLength() >= 0) {
             nextState = State.READ_FIXED_LENGTH_CONTENT;
         } else {
@@ -532,9 +529,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
                 } else {
                     String[] header = splitHeader(line);
                     String name = header[0];
-                    if (!StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.CONTENT_LENGTH ) &&
-                        !StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.TRANSFER_ENCODING ) &&
-                        !StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.TRAILER )) {
+                    if (!StsHeaders.equalsIgnoreCase( name, StsHeaders.Names.CONTENT_LENGTH )) {
                         trailer.trailingHeaders().add(name, header[1]);
                     }
                     lastHeader = name;

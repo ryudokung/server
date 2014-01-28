@@ -50,7 +50,6 @@ public abstract class HttpObjectEncoder<H extends StsMessage> extends MessageToM
 
     private static final int ST_INIT = 0;
     private static final int ST_CONTENT_NON_CHUNK = 1;
-    private static final int ST_CONTENT_CHUNK = 2;
 
     @SuppressWarnings("RedundantFieldInitialization")
     private int state = ST_INIT;
@@ -72,7 +71,7 @@ public abstract class HttpObjectEncoder<H extends StsMessage> extends MessageToM
             encodeInitialLine(buf, m);
             StsHeaders.encode( m.headers(), buf );
             buf.writeBytes(CRLF);
-            state = StsHeaders.isTransferEncodingChunked( m ) ? ST_CONTENT_CHUNK : ST_CONTENT_NON_CHUNK;
+            state = ST_CONTENT_NON_CHUNK;
         }
         if (msg instanceof StsContent || msg instanceof ByteBuf || msg instanceof FileRegion) {
             if (state == ST_INIT) {
@@ -105,50 +104,12 @@ public abstract class HttpObjectEncoder<H extends StsMessage> extends MessageToM
                 if (msg instanceof LastStsContent ) {
                     state = ST_INIT;
                 }
-            } else if (state == ST_CONTENT_CHUNK) {
-                if (buf != null) {
-                    out.add(buf);
-                }
-                encodeChunkedContent(ctx, msg, contentLength, out);
-            } else {
+            }  else {
                 throw new Error();
             }
         } else {
             if (buf != null) {
                 out.add(buf);
-            }
-        }
-    }
-
-    private void encodeChunkedContent(ChannelHandlerContext ctx, Object msg, int contentLength, List<Object> out) {
-        if (contentLength > 0) {
-            byte[] length = Integer.toHexString(contentLength).getBytes(CharsetUtil.US_ASCII);
-            ByteBuf buf = ctx.alloc().buffer(length.length + 2);
-            buf.writeBytes(length);
-            buf.writeBytes(CRLF);
-            out.add(buf);
-            out.add(encodeAndRetain(msg));
-            out.add(CRLF_BUF.duplicate());
-        }
-
-        if (msg instanceof LastStsContent ) {
-            StsHeaders headers = ((LastStsContent) msg).trailingHeaders();
-            if (headers.isEmpty()) {
-                out.add(ZERO_CRLF_CRLF_BUF.duplicate());
-            } else {
-                ByteBuf buf = ctx.alloc().buffer();
-                buf.writeBytes(ZERO_CRLF);
-                StsHeaders.encode( headers, buf );
-                buf.writeBytes(CRLF);
-                out.add(buf);
-            }
-
-            state = ST_INIT;
-        } else {
-            if (contentLength == 0) {
-                // Need to produce some output otherwise an
-                // IllegalstateException will be thrown
-                out.add(EMPTY_BUFFER);
             }
         }
     }
