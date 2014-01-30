@@ -59,24 +59,6 @@ public class KeyManager
     return k.modPow( privateKey, N );
   }
 
-  public byte[] getLoginHash( String login ) throws NoSuchAlgorithmException
-  {
-    login = login + LOGIN_SUFFIX;
-    MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
-    digest.update( login.getBytes() );
-    return digest.digest();
-  }
-
-  public byte[] getLoginPasswordHash( String login, String password ) throws NoSuchAlgorithmException
-  {
-    login = login + LOGIN_SUFFIX;
-    String full = login + ":" + password;
-
-    MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
-    digest.update( full.getBytes() );
-    return digest.digest();
-  }
-
   public byte[] reverseIntegerArray( byte[] array ) throws IOException
   {
     ByteArrayOutputStream bos = new ByteArrayOutputStream( array.length );
