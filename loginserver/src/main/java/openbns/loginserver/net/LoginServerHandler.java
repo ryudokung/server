@@ -21,7 +21,8 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   private static final RequestPacketHandler packetHandler = RequestPacketHandler.getInstance();
 
   private String lastURI;
-  private int session;
+  private Session session;
+  private int sessionId;
 
   // TODO: REFACTOR ALL. ITS ONLY FOR TESTING
   @Override
@@ -35,12 +36,13 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
 
       String s = req.headers().get( "s" );
       if( s != null )
-        session = Integer.parseInt( s );
+        sessionId = Integer.parseInt( s );
     }
     else if( msg instanceof LastStsContent )
     {
       LastStsContent content = (LastStsContent) msg;
       AbstractRequestPacket packet = packetHandler.getPacket( lastURI );
+      packet.setHandler( this );
       packet.setChannel( ctx.channel() );
       packet.setBuf( content.content() );
       packet.read();
@@ -67,5 +69,13 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
     log.debug( "Accepted new channel" );
   }
 
+  public int getSessionId()
+  {
+    return sessionId;
+  }
 
+  public void setSessionId( int sessionId )
+  {
+    this.sessionId = sessionId;
+  }
 }

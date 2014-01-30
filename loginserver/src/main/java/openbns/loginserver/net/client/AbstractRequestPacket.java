@@ -2,6 +2,7 @@ package openbns.loginserver.net.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import openbns.loginserver.net.LoginServerHandler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +14,7 @@ public abstract class AbstractRequestPacket
 {
   protected ByteBuf buf;
   protected Channel channel;
+  protected LoginServerHandler handler;
 
   public abstract void read();
 
@@ -36,5 +38,15 @@ public abstract class AbstractRequestPacket
   public void setChannel( Channel channel )
   {
     this.channel = channel;
+  }
+
+  public void setHandler( LoginServerHandler handler )
+  {
+    this.handler = handler;
+  }
+
+  public LoginServerHandler getHandler()
+  {
+    return handler;
   }
 }

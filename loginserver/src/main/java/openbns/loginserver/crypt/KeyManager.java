@@ -1,5 +1,6 @@
 package openbns.loginserver.crypt;
 
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -41,6 +42,23 @@ public class KeyManager
   {
   }
 
+  public BigInteger generatePrivateKey() throws NoSuchAlgorithmException
+  {
+    long time = System.currentTimeMillis();
+    String s_time = String.valueOf( time );
+    byte[] b_time = s_time.getBytes();
+
+    MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
+    digest.update( b_time );
+    return new BigInteger( digest.digest() );
+  }
+
+  public BigInteger generateExchangeKey( BigInteger privateKey )
+  {
+    BigInteger k = new BigInteger( "2", 10 );
+    return k.modPow( privateKey, N );
+  }
+
   public byte[] getLoginHash( String login ) throws NoSuchAlgorithmException
   {
     login = login + LOGIN_SUFFIX;
@@ -51,11 +69,30 @@ public class KeyManager
 
   public byte[] getLoginPasswordHash( String login, String password ) throws NoSuchAlgorithmException
   {
-    login = login + "@plaync.co.kr";
+    login = login + LOGIN_SUFFIX;
     String full = login + ":" + password;
 
     MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
     digest.update( full.getBytes() );
     return digest.digest();
+  }
+
+  public byte[] reverseIntegerArray( byte[] array ) throws IOException
+  {
+    ByteArrayOutputStream bos = new ByteArrayOutputStream( array.length );
+    DataOutputStream dos = new DataOutputStream( bos );
+    DataInputStream dis = new DataInputStream( new ByteArrayInputStream( array ) );
+
+    while( dis.available() > 0 )
+    {
+      int i = dis.readInt();
+      dos.writeInt( Integer.reverseBytes( i ) );
+    }
+
+    dis.close();
+    dos.close();
+    bos.close();
+
+    return bos.toByteArray();
   }
 }

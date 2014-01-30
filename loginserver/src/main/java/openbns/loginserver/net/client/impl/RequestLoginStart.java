@@ -31,7 +31,8 @@ public class RequestLoginStart extends AbstractRequestPacket
   @Override
   public void execute()
   {
-//    ReplyKeyData replyKeyData = new ReplyKeyData();
+    ReplyKeyData replyKeyData = new ReplyKeyData();
+
 //    replyKeyData.setKeyData( "CAAAAECCFuuwk9gFgAAAAPPz8eAzBs/V/75tRz0caaVJQxHWuC7qfyWvHA+nZMQP1MyHNE1UpLfpf6vUJl3dGfGsethsrufh/3xQ/gDi0ISMOG4sPF49k1tIg5hR9RrqTHdyLYWAb5OZWarjZcrmAPP6JGMBqRS4HQvVwJaJpiSrF/SJN7bX+IchUgIYN5Bg" );
 //
 //    StsXStream stream = new StsXStream();
