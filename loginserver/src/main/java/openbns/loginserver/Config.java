@@ -17,6 +17,8 @@ public class Config
   public static String LS_HOST;
   public static int LS_PORT;
 
+  public static String LOGIN_POSTFIX;
+
   public static void load() throws IOException
   {
     loadServerProperties();
@@ -29,6 +31,8 @@ public class Config
 
     LS_HOST = properties.getProperty( "loginserver.host", "127.0.0.1" );
     LS_PORT = properties.getProperty( "loginserver.port", 6600 );
+
+    LOGIN_POSTFIX = properties.getProperty( "login.postfix", "@plaync.co.kr" );
 
     properties.clear();
     is.close();

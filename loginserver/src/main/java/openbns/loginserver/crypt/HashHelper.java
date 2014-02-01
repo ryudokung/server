@@ -1,5 +1,7 @@
 package openbns.loginserver.crypt;
 
+import openbns.loginserver.Config;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -11,11 +13,9 @@ import java.security.NoSuchAlgorithmException;
  */
 public class HashHelper
 {
-  private static final String LOGIN_SUFFIX = "@plaync.co.kr";
-
   public static byte[] loginHash( String login ) throws NoSuchAlgorithmException
   {
-    login = login + LOGIN_SUFFIX;
+    login = login + Config.LOGIN_POSTFIX;
     MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
     digest.update( login.getBytes() );
     return digest.digest();
@@ -23,7 +23,7 @@ public class HashHelper
 
   public static byte[] passwordHash( String login, String password ) throws NoSuchAlgorithmException
   {
-    String full_name = String.format( "%s%s:%s", login, LOGIN_SUFFIX, password );
+    String full_name = String.format( "%s%s:%s", login, Config.LOGIN_POSTFIX, password );
     MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
     digest.update( full_name.getBytes() );
     return digest.digest();

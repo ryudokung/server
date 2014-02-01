@@ -1,6 +1,7 @@
 package openbns.loginserver.net;
 
 import openbns.loginserver.crypt.KeyManager;
+import openbns.loginserver.dao.AccountDAO;
 import openbns.loginserver.model.Account;
 
 import java.io.IOException;

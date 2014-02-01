@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import openbns.commons.net.codec.sts.*;
 import openbns.commons.xml.StsXStream;
+import openbns.loginserver.dao.AccountDAO;
+import openbns.loginserver.model.Account;
 import openbns.loginserver.net.Session;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.LoginStartDTO;
@@ -25,6 +27,7 @@ import java.math.BigInteger;
 public class RequestLoginStart extends AbstractRequestPacket
 {
   private static final Log log = LogFactory.getLog( RequestLoginStart.class );
+  private LoginStartDTO loginStart;
 
   @Override
   public void read()
@@ -32,8 +35,8 @@ public class RequestLoginStart extends AbstractRequestPacket
     StsXStream stream = new StsXStream();
     stream.processAnnotations( LoginStartDTO.class );
 
-    LoginStartDTO connectDTO = (LoginStartDTO) stream.fromXML( new ByteBufInputStream( buf ) );
-    log.debug( "Read from client object: " + connectDTO );
+    loginStart = (LoginStartDTO) stream.fromXML( new ByteBufInputStream( buf ) );
+    log.debug( "Read from client object: " + loginStart );
   }
 
   @Override
@@ -46,6 +49,9 @@ public class RequestLoginStart extends AbstractRequestPacket
 
     try
     {
+      Account account = AccountDAO.getInstance().getByLogin( loginStart.getLoginName() );
+      session.setAccount( account );
+
       BigInteger key = session.generateServerExchangeKey();
       BigInteger sessionKey = session.getSessionKey();
 

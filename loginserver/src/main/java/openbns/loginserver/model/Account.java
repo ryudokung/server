@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Account
 {
-  private String guid;
+  private String uuid;
   private String login;
   private byte[] password;
   private AccessLevel accessLevel;
@@ -18,14 +18,14 @@ public class Account
   private String lastIp;
   private int lastServerId;
 
-  public String getGuid()
+  public String getUuid()
   {
-    return guid;
+    return uuid;
   }
 
-  public void setGuid( String guid )
+  public void setUuid( String uuid )
   {
-    this.guid = guid;
+    this.uuid = uuid;
   }
 
   public String getLogin()
@@ -102,13 +102,13 @@ public class Account
 
     Account account = (Account) o;
 
-    return !(guid != null ? !guid.equals( account.guid ) : account.guid != null) && !(login != null ? !login.equals( account.login ) : account.login != null);
+    return !(uuid != null ? !uuid.equals( account.uuid ) : account.uuid != null) && !(login != null ? !login.equals( account.login ) : account.login != null);
   }
 
   @Override
   public int hashCode()
   {
-    int result = guid != null ? guid.hashCode() : 0;
+    int result = uuid != null ? uuid.hashCode() : 0;
     result = 31 * result + (login != null ? login.hashCode() : 0);
     return result;
   }
@@ -117,7 +117,7 @@ public class Account
   public String toString()
   {
     return "Account{" +
-            "guid='" + guid + '\'' +
+            "uuid='" + uuid + '\'' +
             ", login='" + login + '\'' +
             ", lastLogin=" + lastLogin +
             ", accessLevel=" + accessLevel +

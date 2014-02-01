@@ -32,7 +32,7 @@ public class AccountRegistration
   public Account createAccount( String login, String password ) throws NoSuchAlgorithmException
   {
     Account account = new Account();
-    account.setGuid( UUIDHelper.uuid() );
+    account.setUuid( UUIDHelper.uuid() );
     account.setLogin( login );
     account.setPassword( HashHelper.passwordHash( login, password ) );
     account.setAccessLevel( AccessLevel.NORMAL );
