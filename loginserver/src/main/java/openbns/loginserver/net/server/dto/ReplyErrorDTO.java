@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * Date: 20.01.14
  * Time: 1:14
  */
-@XStreamAlias( "Error" )
+@XStreamAlias("Error")
 public class ReplyErrorDTO implements IResponseDTO
 {
   @XStreamAsAttribute

@@ -8,10 +8,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Date: 18.01.14
  * Time: 15:52
  */
-@XStreamAlias( "Reply" )
+@XStreamAlias("Reply")
 public class ReplyKeyData implements IResponseDTO
 {
-  @XStreamAlias( "KeyData" )
+  @XStreamAlias("KeyData")
   private String keyData;
 
   public String getKeyData()

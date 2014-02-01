@@ -1,12 +1,13 @@
 package openbns.loginserver.net;
 
+import openbns.commons.util.CryptUtil;
 import openbns.loginserver.crypt.KeyManager;
 import openbns.loginserver.model.Account;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +17,7 @@ import java.util.Random;
  */
 public class Session
 {
-  private static final Random rnd = new Random();
+  private static final SecureRandom rnd = new SecureRandom();
   private BigInteger privateKey;
   private BigInteger exchangeKey;
   private BigInteger serverExchangeKey;
@@ -31,8 +32,7 @@ public class Session
     {
       privateKey = KeyManager.getInstance().generatePrivateKey();
       exchangeKey = KeyManager.getInstance().generateExchangeKey( privateKey );
-      byte[] hardcode = { 0x02, 0x08, 0x0a, 0x12, 0x02, 0x08, 0x0a, 0x12 };
-      sessionKey = new BigInteger( hardcode );
+      sessionKey = new BigInteger( rnd.generateSeed( 8 ) );
     }
     catch( NoSuchAlgorithmException e )
     {
@@ -44,7 +44,7 @@ public class Session
   {
     byte[] passwordHash = account.getPassword();
 
-    BigInteger hashedKey = KeyManager.getInstance().generateSharedKey( sessionKey.toByteArray(), passwordHash ).abs();
+    BigInteger hashedKey = KeyManager.getInstance().generateSharedKey( CryptUtil.bigIntegerToByteArray( sessionKey ), passwordHash );
     BigInteger two = new BigInteger( "2" );
     BigInteger decKey = two.modPow( hashedKey, KeyManager.N );
     decKey = decKey.multiply( KeyManager.P ).mod( KeyManager.N );

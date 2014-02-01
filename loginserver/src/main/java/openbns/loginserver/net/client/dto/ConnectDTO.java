@@ -8,31 +8,31 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Date: 17.01.14
  * Time: 22:48
  */
-@XStreamAlias( "Connect" )
+@XStreamAlias("Connect")
 public class ConnectDTO
 {
-  @XStreamAlias( "ConnType" )
+  @XStreamAlias("ConnType")
   private int connType;
 
-  @XStreamAlias( "Address" )
+  @XStreamAlias("Address")
   private String address;
 
-  @XStreamAlias( "ProductType" )
+  @XStreamAlias("ProductType")
   private int productType;
 
-  @XStreamAlias( "AppIndex" )
+  @XStreamAlias("AppIndex")
   private int appIndex;
 
-  @XStreamAlias( "Epoch" )
+  @XStreamAlias("Epoch")
   private long epoch;
 
-  @XStreamAlias( "Program" )
+  @XStreamAlias("Program")
   private int program;
 
-  @XStreamAlias( "Build" )
+  @XStreamAlias("Build")
   private int build;
 
-  @XStreamAlias( "Process" )
+  @XStreamAlias("Process")
   private int process;
 
   public int getConnType()

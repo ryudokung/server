@@ -1,5 +1,7 @@
 package openbns.loginserver.crypt;
 
+import openbns.commons.util.CryptUtil;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -38,9 +40,7 @@ public class KeyManager
     String s_time = String.valueOf( ticks );
     byte[] b_time = s_time.getBytes();
 
-    MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
-    digest.update( b_time );
-    return new BigInteger( digest.digest() ).abs();
+    return new BigInteger( CryptUtil.sha256( b_time ), 16 );
   }
 
   public BigInteger generateExchangeKey( BigInteger privateKey )
@@ -61,8 +61,9 @@ public class KeyManager
 
     byte[] hash = digest.digest();
     byte[] reversed = reverseIntegerArray( hash );
+    String k = CryptUtil.hexToString( reversed );
 
-    return new BigInteger( reversed );
+    return new BigInteger( k, 16 );
   }
 
   private byte[] reverseIntegerArray( byte[] array ) throws IOException

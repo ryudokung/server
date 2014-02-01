@@ -8,10 +8,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Date: 30.01.14
  * Time: 16:34
  */
-@XStreamAlias( "Request" )
+@XStreamAlias("Request")
 public class RequestTokenDTO
 {
-  @XStreamAlias( "AppId" )
+  @XStreamAlias("AppId")
   private String appId;
 
   public String getAppId()

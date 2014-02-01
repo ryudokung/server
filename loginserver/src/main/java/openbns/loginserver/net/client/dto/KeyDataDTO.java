@@ -8,10 +8,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Date: 17.01.14
  * Time: 23:03
  */
-@XStreamAlias( "Request" )
+@XStreamAlias("Request")
 public class KeyDataDTO
 {
-  @XStreamAlias( "KeyData" )
+  @XStreamAlias("KeyData")
   private String keyData;
 
   public String getKeyData()

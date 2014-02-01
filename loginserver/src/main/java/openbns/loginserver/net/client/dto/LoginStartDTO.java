@@ -8,10 +8,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Date: 17.01.14
  * Time: 23:01
  */
-@XStreamAlias( "Request" )
+@XStreamAlias("Request")
 public class LoginStartDTO
 {
-  @XStreamAlias( "LoginName" )
+  @XStreamAlias("LoginName")
   private String loginName;
 
   public String getLoginName()

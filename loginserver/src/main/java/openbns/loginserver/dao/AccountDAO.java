@@ -66,7 +66,7 @@ public class AccountDAO
 
   public Account getByLogin( String login )
   {
-    login = login.split( "@" )[0];
+    login = login.split( "@" )[ 0 ];
     Connection con = null;
     PreparedStatement stmt = null;
     ResultSet rset = null;

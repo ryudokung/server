@@ -3,6 +3,7 @@ package openbns.loginserver.net.client.impl;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import openbns.commons.net.codec.sts.*;
+import openbns.commons.util.CryptUtil;
 import openbns.commons.xml.StsXStream;
 import openbns.loginserver.dao.AccountDAO;
 import openbns.loginserver.model.Account;
@@ -13,11 +14,10 @@ import openbns.loginserver.net.server.dto.ReplyErrorDTO;
 import openbns.loginserver.net.server.dto.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sun.misc.BASE64Encoder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Created with IntelliJ IDEA.
@@ -52,22 +52,20 @@ public class RequestLoginStart extends AbstractRequestPacket
       BigInteger key = session.generateServerExchangeKey();
       BigInteger sessionKey = session.getSessionKey();
 
-      byte[] bk = key.toByteArray();
-      byte[] sk = sessionKey.toByteArray();
+      byte[] bk = CryptUtil.bigIntegerToByteArray( key );
+      byte[] sk = CryptUtil.bigIntegerToByteArray( sessionKey );
 
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      DataOutputStream dos = new DataOutputStream( outputStream );
-      dos.writeInt( Integer.reverseBytes( sk.length ) );
-      dos.write( sk );
-      dos.writeInt( Integer.reverseBytes( bk.length ) );
-      dos.write( bk );
-      dos.flush();
-      dos.close();
+      ByteBuffer buffer = ByteBuffer.allocate( bk.length + sk.length + 8 );
+      buffer.order( ByteOrder.LITTLE_ENDIAN );
 
-      byte[] array = outputStream.toByteArray();
+      buffer.clear();
+      buffer.putInt( sk.length );
+      buffer.put( sk );
+      buffer.putInt( bk.length );
+      buffer.put( bk );
+      buffer.flip();
 
-      BASE64Encoder encoder = new BASE64Encoder();
-      String kd = encoder.encode( array );
+      String kd = CryptUtil.base64( buffer.array() );
 
       ReplyKeyData replyKeyData = new ReplyKeyData();
       replyKeyData.setKeyData( kd );
@@ -95,13 +93,12 @@ public class RequestLoginStart extends AbstractRequestPacket
       error.setLine( 458 );
       byte[] b = stream.toXML( error ).getBytes();
 
-      DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE);
+      DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE );
       resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
       resp.headers().add( StsHeaders.Names.SESSION_NUMBER, session.getSessionId() + "R" );
 
       channel.writeAndFlush( resp );
       channel.writeAndFlush( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
-
     }
     catch( Exception e )
     {
