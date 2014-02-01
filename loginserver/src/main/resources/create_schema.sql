@@ -30,16 +30,16 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `openbns`.`accounts_log` ;
 
 CREATE TABLE IF NOT EXISTS `openbns`.`accounts_log` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `uuid` VARCHAR(36) NOT NULL,
   `login` VARCHAR(16) NOT NULL,
   `msgId` SMALLINT NOT NULL,
   `time` DATETIME NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uuid`),
   CONSTRAINT `accounts_log_fk_login`
     FOREIGN KEY (`login`)
     REFERENCES `openbns`.`accounts` (`login`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -49,14 +49,14 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `openbns`.`accounts_info` ;
 
 CREATE TABLE IF NOT EXISTS `openbns`.`accounts_info` (
-  `login` VARCHAR(16) NOT NULL,
+  `uuid` VARCHAR(36) NOT NULL,
   `birthday` DATETIME NULL,
   `question` VARCHAR(255) NULL,
   `answer` VARCHAR(255) NULL,
-  PRIMARY KEY (`login`),
-  CONSTRAINT `accounts_info_fk_login`
-    FOREIGN KEY (`login`)
-    REFERENCES `openbns`.`accounts` (`login`)
+  PRIMARY KEY (`uuid`),
+  CONSTRAINT `accounts_info_fk_uuid`
+    FOREIGN KEY (`uuid`)
+    REFERENCES `openbns`.`accounts` (`uuid`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -77,6 +77,26 @@ CREATE TABLE IF NOT EXISTS `openbns`.`accounts_settings` (
   CONSTRAINT `accounts_settings_fk_login`
     FOREIGN KEY (`login`)
     REFERENCES `openbns`.`accounts` (`login`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `openbns`.`accounts_ban`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `openbns`.`accounts_ban` ;
+
+CREATE TABLE IF NOT EXISTS `openbns`.`accounts_ban` (
+  `uuid` VARCHAR(36) NOT NULL,
+  `banDate` DATETIME NOT NULL,
+  `unbanDate` DATETIME NOT NULL,
+  `type` TINYINT NOT NULL DEFAULT 0,
+  `reason` VARCHAR(255) NULL,
+  PRIMARY KEY (`uuid`),
+  CONSTRAINT `accounts_ban_fk_uuid`
+    FOREIGN KEY (`uuid`)
+    REFERENCES `openbns`.`accounts` (`uuid`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
