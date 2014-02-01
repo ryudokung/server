@@ -1,12 +1,20 @@
 package openbns.loginserver.net.client.impl;
 
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
+import openbns.commons.net.codec.sts.*;
 import openbns.commons.xml.StsXStream;
+import openbns.loginserver.net.Session;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.LoginStartDTO;
 import openbns.loginserver.net.server.dto.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import sun.misc.BASE64Encoder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.math.BigInteger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,19 +39,50 @@ public class RequestLoginStart extends AbstractRequestPacket
   @Override
   public void execute()
   {
-    ReplyKeyData replyKeyData = new ReplyKeyData();
+    Session session = getHandler().getSession();
 
-//    replyKeyData.setKeyData( "CAAAAECCFuuwk9gFgAAAAPPz8eAzBs/V/75tRz0caaVJQxHWuC7qfyWvHA+nZMQP1MyHNE1UpLfpf6vUJl3dGfGsethsrufh/3xQ/gDi0ISMOG4sPF49k1tIg5hR9RrqTHdyLYWAb5OZWarjZcrmAPP6JGMBqRS4HQvVwJaJpiSrF/SJN7bX+IchUgIYN5Bg" );
-//
-//    StsXStream stream = new StsXStream();
-//    stream.processAnnotations( ReplyKeyData.class );
-//    byte[] b = stream.toXML( replyKeyData ).getBytes();
-//
-//    DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK );
-//    resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
-//    resp.headers().add( "s", session + "R" );
-//
-//    channel.write( resp );
-//    channel.write( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
+    // TODO:
+//    session.setAccount(  );
+
+    try
+    {
+      BigInteger key = session.generateServerExchangeKey();
+      BigInteger sessionKey = session.getSessionKey();
+
+      byte[] bk = key.toByteArray();
+      byte[] sk = sessionKey.toByteArray();
+
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      DataOutputStream dos = new DataOutputStream( outputStream );
+      dos.writeInt( sk.length );
+      dos.write( sk );
+      dos.writeInt( bk.length );
+      dos.write( bk );
+      dos.flush();
+      dos.close();
+
+      byte[] array = outputStream.toByteArray();
+
+      BASE64Encoder encoder = new BASE64Encoder();
+      String kd = encoder.encode( array );
+
+      ReplyKeyData replyKeyData = new ReplyKeyData();
+      replyKeyData.setKeyData( kd );
+
+      StsXStream stream = new StsXStream();
+      stream.processAnnotations( ReplyKeyData.class );
+      byte[] b = stream.toXML( replyKeyData ).getBytes();
+
+      DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK );
+      resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
+      resp.headers().add( StsHeaders.Names.SESSION_NUMBER, session.getSessionId() + "R" );
+
+      channel.write( resp );
+      channel.write( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
+    }
+    catch( Exception e )
+    {
+      e.printStackTrace();
+    }
   }
 }

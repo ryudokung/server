@@ -69,4 +69,9 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
     session = new Session();
     log.debug( "Generated session: " + session );
   }
+
+  public Session getSession()
+  {
+    return session;
+  }
 }
