@@ -74,7 +74,7 @@ public class RequestLoginStart extends AbstractRequestPacket
       stream.processAnnotations( ReplyKeyData.class );
       byte[] b = stream.toXML( replyKeyData ).getBytes();
 
-      DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK );
+      DefaultStsResponse resp = new DefaultStsResponse( StsResponseStatus.OK );
       resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
       resp.headers().add( StsHeaders.Names.SESSION_NUMBER, session.getSessionId() + "R" );
 
@@ -93,7 +93,7 @@ public class RequestLoginStart extends AbstractRequestPacket
       error.setLine( 458 );
       byte[] b = stream.toXML( error ).getBytes();
 
-      DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE );
+      DefaultStsResponse resp = new DefaultStsResponse( StsResponseStatus.NOT_ONLINE );
       resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
       resp.headers().add( StsHeaders.Names.SESSION_NUMBER, session.getSessionId() + "R" );
 

@@ -44,7 +44,7 @@ import java.util.List;
 public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject>
 {
   public static final int DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS = 1024;
-  private static final FullStsResponse CONTINUE = new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.CONTINUE, Unpooled.EMPTY_BUFFER );
+  private static final FullStsResponse CONTINUE = new DefaultFullStsResponse( StsResponseStatus.CONTINUE, Unpooled.EMPTY_BUFFER );
 
   private final int maxContentLength;
   private FullStsMessage currentMessage;
@@ -131,7 +131,7 @@ public class HttpObjectAggregator extends MessageToMessageDecoder<StsObject>
       else if( msg instanceof StsResponse )
       {
         StsResponse header = (StsResponse) msg;
-        this.currentMessage = currentMessage = new DefaultFullStsResponse( header.getProtocolVersion(), header.getStatus(), Unpooled.compositeBuffer( maxCumulationBufferComponents ) );
+        this.currentMessage = currentMessage = new DefaultFullStsResponse( header.getStatus(), Unpooled.compositeBuffer( maxCumulationBufferComponents ) );
       }
       else
       {

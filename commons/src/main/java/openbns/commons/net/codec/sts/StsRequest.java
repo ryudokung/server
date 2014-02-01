@@ -41,7 +41,4 @@ public interface StsRequest extends StsMessage
    * Set the requested URI (or alternatively, path)
    */
   StsRequest setUri( String uri );
-
-  @Override
-  StsRequest setProtocolVersion( StsVersion version );
 }

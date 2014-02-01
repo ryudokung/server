@@ -34,11 +34,6 @@ public interface StsMessage extends StsObject
   StsVersion getProtocolVersion();
 
   /**
-   * Set the protocol version of this {@link StsMessage}
-   */
-  StsMessage setProtocolVersion( StsVersion version );
-
-  /**
    * Returns the headers of this message.
    */
   StsHeaders headers();

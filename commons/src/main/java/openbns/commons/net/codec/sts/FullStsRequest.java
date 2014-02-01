@@ -31,9 +31,6 @@ public interface FullStsRequest extends StsRequest, FullStsMessage
   FullStsRequest retain();
 
   @Override
-  FullStsRequest setProtocolVersion( StsVersion version );
-
-  @Override
   FullStsRequest setMethod( StsMethod method );
 
   @Override

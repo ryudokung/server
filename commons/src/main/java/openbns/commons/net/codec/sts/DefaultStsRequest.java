@@ -48,7 +48,7 @@ public class DefaultStsRequest extends DefaultStsMessage implements StsRequest
    */
   public DefaultStsRequest( StsVersion stsVersion, StsMethod method, String uri, boolean validateHeaders )
   {
-    super( stsVersion, validateHeaders );
+    super( validateHeaders );
     if( method == null )
     {
       throw new NullPointerException( "method" );
@@ -92,13 +92,6 @@ public class DefaultStsRequest extends DefaultStsMessage implements StsRequest
       throw new NullPointerException( "uri" );
     }
     this.uri = uri;
-    return this;
-  }
-
-  @Override
-  public StsRequest setProtocolVersion( StsVersion version )
-  {
-    super.setProtocolVersion( version );
     return this;
   }
 

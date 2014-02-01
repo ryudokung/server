@@ -95,13 +95,6 @@ public class DefaultFullStsRequest extends DefaultStsRequest implements FullStsR
   }
 
   @Override
-  public FullStsRequest setProtocolVersion( StsVersion version )
-  {
-    super.setProtocolVersion( version );
-    return this;
-  }
-
-  @Override
   public FullStsRequest setMethod( StsMethod method )
   {
     super.setMethod( method );

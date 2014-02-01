@@ -31,8 +31,5 @@ public interface FullStsResponse extends StsResponse, FullStsMessage
   FullStsResponse retain();
 
   @Override
-  FullStsResponse setProtocolVersion( StsVersion version );
-
-  @Override
   FullStsResponse setStatus( StsResponseStatus status );
 }

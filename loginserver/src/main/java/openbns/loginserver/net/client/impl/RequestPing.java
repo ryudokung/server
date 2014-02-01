@@ -2,7 +2,6 @@ package openbns.loginserver.net.client.impl;
 
 import openbns.commons.net.codec.sts.DefaultFullStsResponse;
 import openbns.commons.net.codec.sts.StsResponseStatus;
-import openbns.commons.net.codec.sts.StsVersion;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 
 /**
@@ -22,6 +21,6 @@ public class RequestPing extends AbstractRequestPacket
   @Override
   public void execute()
   {
-    channel.write( new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK ) );
+    channel.write( new DefaultFullStsResponse( StsResponseStatus.OK ) );
   }
 }

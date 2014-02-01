@@ -28,20 +28,19 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullSt
   private final StsHeaders trailingHeaders;
   private final boolean validateHeaders;
 
-  public DefaultFullStsResponse( StsVersion version, StsResponseStatus status )
+  public DefaultFullStsResponse( StsResponseStatus status )
   {
-    this( version, status, Unpooled.buffer( 0 ) );
+    this( status, Unpooled.buffer( 0 ) );
   }
 
-  public DefaultFullStsResponse( StsVersion version, StsResponseStatus status, ByteBuf content )
+  public DefaultFullStsResponse( StsResponseStatus status, ByteBuf content )
   {
-    this( version, status, content, true );
+    this( status, content, true );
   }
 
-  public DefaultFullStsResponse( StsVersion version, StsResponseStatus status, ByteBuf content,
-                                 boolean validateHeaders )
+  public DefaultFullStsResponse( StsResponseStatus status, ByteBuf content, boolean validateHeaders )
   {
-    super( version, status, validateHeaders );
+    super( status, validateHeaders );
     if( content == null )
     {
       throw new NullPointerException( "content" );
@@ -96,13 +95,6 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullSt
   }
 
   @Override
-  public FullStsResponse setProtocolVersion( StsVersion version )
-  {
-    super.setProtocolVersion( version );
-    return this;
-  }
-
-  @Override
   public FullStsResponse setStatus( StsResponseStatus status )
   {
     super.setStatus( status );
@@ -112,7 +104,7 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullSt
   @Override
   public FullStsResponse copy()
   {
-    DefaultFullStsResponse copy = new DefaultFullStsResponse( getProtocolVersion(), getStatus(), content().copy(), validateHeaders );
+    DefaultFullStsResponse copy = new DefaultFullStsResponse( getStatus(), content().copy(), validateHeaders );
     copy.headers().set( headers() );
     copy.trailingHeaders().set( trailingHeaders() );
     return copy;
@@ -121,7 +113,7 @@ public class DefaultFullStsResponse extends DefaultStsResponse implements FullSt
   @Override
   public FullStsResponse duplicate()
   {
-    DefaultFullStsResponse duplicate = new DefaultFullStsResponse( getProtocolVersion(), getStatus(), content().duplicate(), validateHeaders );
+    DefaultFullStsResponse duplicate = new DefaultFullStsResponse( getStatus(), content().duplicate(), validateHeaders );
     duplicate.headers().set( headers() );
     duplicate.trailingHeaders().set( trailingHeaders() );
     return duplicate;

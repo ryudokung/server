@@ -3,7 +3,6 @@ package openbns.loginserver.net.client.impl;
 import io.netty.buffer.ByteBufInputStream;
 import openbns.commons.net.codec.sts.DefaultFullStsResponse;
 import openbns.commons.net.codec.sts.StsResponseStatus;
-import openbns.commons.net.codec.sts.StsVersion;
 import openbns.commons.xml.StsXStream;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.ConnectDTO;
@@ -33,6 +32,6 @@ public class RequestConnect extends AbstractRequestPacket
   @Override
   public void execute()
   {
-    channel.write( new DefaultFullStsResponse( StsVersion.STS_1_0, StsResponseStatus.OK ) );
+    channel.write( new DefaultFullStsResponse( StsResponseStatus.OK ) );
   }
 }

@@ -41,7 +41,4 @@ public interface StsResponse extends StsMessage
    * Set the status of this {@link StsResponse}.
    */
   StsResponse setStatus( StsResponseStatus status );
-
-  @Override
-  StsResponse setProtocolVersion( StsVersion version );
 }
