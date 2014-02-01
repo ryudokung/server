@@ -62,6 +62,26 @@ CREATE TABLE IF NOT EXISTS `openbns`.`accounts_info` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `openbns`.`accounts_settings`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `openbns`.`accounts_settings` ;
+
+CREATE TABLE IF NOT EXISTS `openbns`.`accounts_settings` (
+  `uuid` VARCHAR(36) NOT NULL,
+  `login` VARCHAR(16) NOT NULL,
+  `key` VARCHAR(45) NOT NULL,
+  `value` VARCHAR(45) NULL,
+  PRIMARY KEY (`uuid`, `login`, `key`),
+  INDEX `fk_login_idx` (`login` ASC),
+  CONSTRAINT `fk_login`
+    FOREIGN KEY (`login`)
+    REFERENCES `openbns`.`accounts` (`login`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
