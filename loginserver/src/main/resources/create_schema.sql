@@ -105,3 +105,19 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+USE `openbns`;
+
+DELIMITER $$
+
+USE `openbns`$$
+DROP TRIGGER IF EXISTS `openbns`.`accounts_reg_log` $$
+USE `openbns`$$
+CREATE TRIGGER `accounts_reg_log` AFTER INSERT ON `accounts` 
+FOR EACH ROW
+BEGIN
+	INSERT INTO accounts_log VALUES (UUID(), NEW.login, 0, NOW());
+END;
+$$
+
+
+DELIMITER ;
