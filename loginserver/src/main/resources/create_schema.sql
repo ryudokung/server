@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `openbns`.`accounts_log` (
   `msgId` SMALLINT NOT NULL,
   `time` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_login`
+  CONSTRAINT `accounts_log_fk_login`
     FOREIGN KEY (`login`)
     REFERENCES `openbns`.`accounts` (`login`)
     ON DELETE CASCADE
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `openbns`.`accounts_info` (
   `question` VARCHAR(255) NULL,
   `answer` VARCHAR(255) NULL,
   PRIMARY KEY (`login`),
-  CONSTRAINT `fk_login`
+  CONSTRAINT `accounts_info_fk_login`
     FOREIGN KEY (`login`)
     REFERENCES `openbns`.`accounts` (`login`)
     ON DELETE CASCADE
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `openbns`.`accounts_settings` (
   `value` VARCHAR(45) NULL,
   PRIMARY KEY (`uuid`, `login`, `key`),
   INDEX `fk_login_idx` (`login` ASC),
-  CONSTRAINT `fk_login`
+  CONSTRAINT `accounts_settings_fk_login`
     FOREIGN KEY (`login`)
     REFERENCES `openbns`.`accounts` (`login`)
     ON DELETE CASCADE
