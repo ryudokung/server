@@ -26,13 +26,23 @@ public class Session
 
   private Account account;
 
-  public Session()
+ public void init()
   {
     try
     {
       privateKey = KeyManager.getInstance().generatePrivateKey();
       exchangeKey = KeyManager.getInstance().generateExchangeKey( privateKey );
-      sessionKey = new BigInteger( 64, rnd );
+      byte[] hardcode = {
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+              0x02, 0x08, 0x0a, 0x12,
+      };
+      sessionKey = new BigInteger( hardcode );
     }
     catch( NoSuchAlgorithmException e )
     {
@@ -45,7 +55,8 @@ public class Session
     byte[] passwordHash = account.getPassword();
 
     BigInteger hashedKey = KeyManager.getInstance().generateSharedKey( sessionKey.toByteArray(), passwordHash );
-    BigInteger decKey = new BigInteger( "2" ).modPow( hashedKey, KeyManager.N );
+    BigInteger two = new BigInteger( "2" );
+    BigInteger decKey = two.modPow( hashedKey, KeyManager.N );
     decKey = decKey.multiply( KeyManager.P ).mod( KeyManager.N );
     serverExchangeKey = exchangeKey.add( decKey ).mod( KeyManager.N );
     return serverExchangeKey;

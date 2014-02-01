@@ -20,7 +20,6 @@ public class KeyManager
   public static final BigInteger P = new BigInteger( "7A39FF57BCBFAA521DCE9C7DEFAB520640AC493E1B6024B95A28390E8F05787D", 16 );
   public static final byte[] STATIC_KEY = { (byte) 0xAC, (byte) 0x34, (byte) 0xF3, (byte) 0x07, (byte) 0x0D, (byte) 0xC0, (byte) 0xE5, (byte) 0x23, (byte) 0x02, (byte) 0xC2, (byte) 0xE8, (byte) 0xDA, (byte) 0x0E, (byte) 0x3F, (byte) 0x7B, (byte) 0x3E, (byte) 0x63, (byte) 0x22, (byte) 0x36, (byte) 0x97, (byte) 0x55, (byte) 0x5D, (byte) 0xF5, (byte) 0x4E, (byte) 0x71, (byte) 0x22, (byte) 0xA1, (byte) 0x4D, (byte) 0xBC, (byte) 0x99, (byte) 0xA3, (byte) 0xE8 };
 
-  private static final String LOGIN_SUFFIX = "@plaync.co.kr";
   private static KeyManager ourInstance = new KeyManager();
 
   public static KeyManager getInstance()
@@ -35,7 +34,8 @@ public class KeyManager
   public BigInteger generatePrivateKey() throws NoSuchAlgorithmException
   {
     long time = System.currentTimeMillis();
-    String s_time = String.valueOf( time );
+    long ticks = 621355968000000000L + time * 10000;
+    String s_time = String.valueOf( ticks );
     byte[] b_time = s_time.getBytes();
 
     MessageDigest digest = MessageDigest.getInstance( "SHA-256" );

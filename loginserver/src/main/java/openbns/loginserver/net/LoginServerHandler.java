@@ -67,6 +67,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   {
     log.debug( "Accepted new channel" );
     session = new Session();
+    session.init();
     log.debug( "Generated session: " + session );
   }
 
