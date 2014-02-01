@@ -15,17 +15,17 @@ import java.util.Date;
  * Date: 30.01.14
  * Time: 19:53
  */
-public class UserRegistration
+public class AccountRegistration
 {
   private static final AccountDAO dao = AccountDAO.getInstance();
-  private static UserRegistration ourInstance = new UserRegistration();
+  private static AccountRegistration ourInstance = new AccountRegistration();
 
-  public static UserRegistration getInstance()
+  public static AccountRegistration getInstance()
   {
     return ourInstance;
   }
 
-  private UserRegistration()
+  private AccountRegistration()
   {
   }
 

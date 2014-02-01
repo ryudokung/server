@@ -3,7 +3,7 @@ package openbns.accman;
 import openbns.DataBaseFactory;
 import openbns.loginserver.Config;
 import openbns.loginserver.model.Account;
-import openbns.loginserver.service.UserRegistration;
+import openbns.loginserver.service.AccountRegistration;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +17,7 @@ import java.util.Scanner;
  */
 public class AccountManager
 {
-  private static final UserRegistration registrationService = UserRegistration.getInstance();
+  private static final AccountRegistration registrationService = AccountRegistration.getInstance();
 
   public static void main( String[] args ) throws IOException, NoSuchAlgorithmException
   {

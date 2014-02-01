@@ -118,12 +118,10 @@ public abstract class StsHeaders implements Iterable<Entry<String, String>>
     }
   };
 
-  /**
-   * Standard HTTP header names.
-   */
   public static final class Names
   {
     public static final String CONTENT_LENGTH = "l";
+    public static final String SESSION_NUMBER = "s";
 
     private Names()
     {

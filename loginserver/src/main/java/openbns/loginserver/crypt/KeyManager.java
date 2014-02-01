@@ -55,7 +55,7 @@ public class KeyManager
 
   public BigInteger generateExchangeKey( BigInteger privateKey )
   {
-    BigInteger k = new BigInteger( "2", 10 );
+    BigInteger k = new BigInteger( "2" );
     return k.modPow( privateKey, N );
   }
 

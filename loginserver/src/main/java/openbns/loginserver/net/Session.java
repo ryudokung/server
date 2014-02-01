@@ -17,6 +17,8 @@ public class Session
   private BigInteger exchangeKey;
   private BigInteger sessionKey;
 
+  private int sessionId;
+
   public Session()
   {
     try
@@ -28,5 +30,16 @@ public class Session
     {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public String toString()
+  {
+    return "Session{" +
+            "privateKey=" + privateKey +
+            ", exchangeKey=" + exchangeKey +
+            ", sessionKey=" + sessionKey +
+            ", sessionId=" + sessionId +
+            '}';
   }
 }

@@ -22,7 +22,6 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
 
   private String lastURI;
   private Session session;
-  private int sessionId;
 
   // TODO: REFACTOR ALL. ITS ONLY FOR TESTING
   @Override
@@ -34,9 +33,9 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
       lastURI = req.getUri();
       log.info( "Receive request from client. Method: " + req.getMethod() + "; URI: " + req.getUri() );
 
-      String s = req.headers().get( "s" );
-      if( s != null )
-        sessionId = Integer.parseInt( s );
+//      String s = req.headers().get( "s" );
+//      if( s != null )
+//        sessionId = Integer.parseInt( s );
     }
     else if( msg instanceof LastStsContent )
     {
@@ -67,15 +66,7 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
   public void channelRegistered( ChannelHandlerContext ctx ) throws Exception
   {
     log.debug( "Accepted new channel" );
-  }
-
-  public int getSessionId()
-  {
-    return sessionId;
-  }
-
-  public void setSessionId( int sessionId )
-  {
-    this.sessionId = sessionId;
+    session = new Session();
+    log.debug( "Generated session: " + session );
   }
 }
