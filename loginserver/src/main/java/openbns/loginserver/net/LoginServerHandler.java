@@ -33,9 +33,9 @@ public class LoginServerHandler extends ChannelInboundHandlerAdapter
       lastURI = req.getUri();
       log.info( "Receive request from client. Method: " + req.getMethod() + "; URI: " + req.getUri() );
 
-//      String s = req.headers().get( "s" );
-//      if( s != null )
-//        sessionId = Integer.parseInt( s );
+      String s = req.headers().get( "s" );
+      if( s != null )
+        session.setSessionId( Integer.parseInt( s ) );
     }
     else if( msg instanceof LastStsContent )
     {

@@ -40,7 +40,7 @@ public class KeyManager
 
     MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
     digest.update( b_time );
-    return new BigInteger( digest.digest() );
+    return new BigInteger( digest.digest() ).abs();
   }
 
   public BigInteger generateExchangeKey( BigInteger privateKey )

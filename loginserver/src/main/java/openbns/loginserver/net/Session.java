@@ -1,7 +1,6 @@
 package openbns.loginserver.net;
 
 import openbns.loginserver.crypt.KeyManager;
-import openbns.loginserver.dao.AccountDAO;
 import openbns.loginserver.model.Account;
 
 import java.io.IOException;
@@ -26,22 +25,13 @@ public class Session
 
   private Account account;
 
- public void init()
+  public void init()
   {
     try
     {
       privateKey = KeyManager.getInstance().generatePrivateKey();
       exchangeKey = KeyManager.getInstance().generateExchangeKey( privateKey );
-      byte[] hardcode = {
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-              0x02, 0x08, 0x0a, 0x12,
-      };
+      byte[] hardcode = { 0x02, 0x08, 0x0a, 0x12, 0x02, 0x08, 0x0a, 0x12 };
       sessionKey = new BigInteger( hardcode );
     }
     catch( NoSuchAlgorithmException e )
@@ -54,7 +44,7 @@ public class Session
   {
     byte[] passwordHash = account.getPassword();
 
-    BigInteger hashedKey = KeyManager.getInstance().generateSharedKey( sessionKey.toByteArray(), passwordHash );
+    BigInteger hashedKey = KeyManager.getInstance().generateSharedKey( sessionKey.toByteArray(), passwordHash ).abs();
     BigInteger two = new BigInteger( "2" );
     BigInteger decKey = two.modPow( hashedKey, KeyManager.N );
     decKey = decKey.multiply( KeyManager.P ).mod( KeyManager.N );
@@ -90,6 +80,11 @@ public class Session
   public int getSessionId()
   {
     return sessionId;
+  }
+
+  public void setSessionId( int sessionId )
+  {
+    this.sessionId = sessionId;
   }
 
   public Account getAccount()

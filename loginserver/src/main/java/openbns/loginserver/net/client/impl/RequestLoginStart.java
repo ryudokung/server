@@ -9,6 +9,7 @@ import openbns.loginserver.model.Account;
 import openbns.loginserver.net.Session;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.LoginStartDTO;
+import openbns.loginserver.net.server.dto.ReplyErrorDTO;
 import openbns.loginserver.net.server.dto.ReplyKeyData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,10 +44,6 @@ public class RequestLoginStart extends AbstractRequestPacket
   public void execute()
   {
     Session session = getHandler().getSession();
-
-    // TODO:
-//    session.setAccount(  );
-
     try
     {
       Account account = AccountDAO.getInstance().getByLogin( loginStart.getLoginName() );
@@ -60,9 +57,9 @@ public class RequestLoginStart extends AbstractRequestPacket
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       DataOutputStream dos = new DataOutputStream( outputStream );
-      dos.writeInt( sk.length );
+      dos.writeInt( Integer.reverseBytes( sk.length ) );
       dos.write( sk );
-      dos.writeInt( bk.length );
+      dos.writeInt( Integer.reverseBytes( bk.length ) );
       dos.write( bk );
       dos.flush();
       dos.close();
@@ -83,8 +80,28 @@ public class RequestLoginStart extends AbstractRequestPacket
       resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
       resp.headers().add( StsHeaders.Names.SESSION_NUMBER, session.getSessionId() + "R" );
 
-      channel.write( resp );
-      channel.write( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
+      channel.writeAndFlush( resp );
+      channel.writeAndFlush( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
+    }
+    catch( NullPointerException e )
+    {
+      StsXStream stream = new StsXStream();
+      stream.processAnnotations( ReplyErrorDTO.class );
+
+      ReplyErrorDTO error = new ReplyErrorDTO();
+      error.setCode( 3002 );
+      error.setServer( 1001 );
+      error.setModule( 1 );
+      error.setLine( 458 );
+      byte[] b = stream.toXML( error ).getBytes();
+
+      DefaultStsResponse resp = new DefaultStsResponse( StsVersion.STS_1_0, StsResponseStatus.NOT_ONLINE);
+      resp.headers().add( StsHeaders.Names.CONTENT_LENGTH, b.length );
+      resp.headers().add( StsHeaders.Names.SESSION_NUMBER, session.getSessionId() + "R" );
+
+      channel.writeAndFlush( resp );
+      channel.writeAndFlush( new DefaultLastStsContent( Unpooled.wrappedBuffer( b ) ) );
+
     }
     catch( Exception e )
     {
