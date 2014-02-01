@@ -18,9 +18,13 @@ import java.security.SecureRandom;
 public class Session
 {
   private static final SecureRandom rnd = new SecureRandom();
+  
   private BigInteger privateKey;
   private BigInteger exchangeKey;
+
   private BigInteger serverExchangeKey;
+  private BigInteger clientExchangeKey;
+
   private BigInteger sessionKey;
   private int sessionId;
 
@@ -44,12 +48,25 @@ public class Session
   {
     byte[] passwordHash = account.getPassword();
 
-    BigInteger hashedKey = KeyManager.getInstance().generateSharedKey( CryptUtil.bigIntegerToByteArray( sessionKey ), passwordHash );
+    BigInteger spKey = KeyManager.getInstance().generateAIIKey( CryptUtil.bigIntegerToByteArray( sessionKey ), passwordHash );
     BigInteger two = new BigInteger( "2" );
-    BigInteger decKey = two.modPow( hashedKey, KeyManager.N );
+    BigInteger decKey = two.modPow( spKey, KeyManager.N );
     decKey = decKey.multiply( KeyManager.P ).mod( KeyManager.N );
     serverExchangeKey = exchangeKey.add( decKey ).mod( KeyManager.N );
     return serverExchangeKey;
+  }
+
+  public BigInteger generateClientExchangeKey( byte[] array ) throws NoSuchAlgorithmException, IOException
+  {
+    byte[] passwordHash = account.getPassword();
+
+    BigInteger hash1 = KeyManager.getInstance().generateAIIKey( array, CryptUtil.bigIntegerToByteArray( serverExchangeKey ) );
+    BigInteger hash2 = KeyManager.getInstance().generateAIIKey( CryptUtil.bigIntegerToByteArray( sessionKey ), passwordHash );
+
+    BigInteger v27 = new BigInteger( CryptUtil.hexToString( array ), 16 );
+    BigInteger v21 = exchangeKey.modPow( hash1.multiply( hash2 ), KeyManager.N ).multiply( v27.modPow( privateKey, KeyManager.N ) ).mod( KeyManager.N );
+
+    return clientExchangeKey;
   }
 
   public void setAccount( Account account )

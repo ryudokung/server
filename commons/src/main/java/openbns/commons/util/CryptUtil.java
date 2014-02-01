@@ -46,6 +46,13 @@ public class CryptUtil
     return CryptUtil.hexToString( digest.digest() );
   }
 
+  public static byte[] sha256bytes( byte[] data ) throws NoSuchAlgorithmException
+  {
+    MessageDigest digest = MessageDigest.getInstance( "SHA-256" );
+    digest.update( data );
+    return digest.digest();
+  }
+
   public static String base64( byte[] data )
   {
     return DatatypeConverter.printBase64Binary( data );

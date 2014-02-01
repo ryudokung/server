@@ -6,6 +6,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,7 +50,7 @@ public class KeyManager
     return k.modPow( privateKey, N );
   }
 
-  public BigInteger generateSharedKey( byte[] tmp1, byte[] tmp2 ) throws NoSuchAlgorithmException, IOException
+  public BigInteger generateAIIKey( byte[] tmp1, byte[] tmp2 ) throws NoSuchAlgorithmException, IOException
   {
     byte[] sharedArray = new byte[ tmp1.length + tmp2.length ];
 
@@ -83,5 +84,55 @@ public class KeyManager
     bos.close();
 
     return bos.toByteArray();
+  }
+
+  public byte[] generateEncryptionKeyRoot( byte[] src ) throws NoSuchAlgorithmException
+  {
+    int firstSize = src.length;
+    int startIndex = 0;
+    byte[] half;
+    byte[] dst = new byte[ 64 ];
+    if( src.length > 4 )
+    {
+      do
+      {
+        if( src[ startIndex ] == 0 )
+          break;
+        firstSize--;
+        startIndex++;
+      }
+      while( firstSize > 4 );
+    }
+    int size = firstSize >> 1;
+    half = new byte[ size ];
+    if( size > 0 )
+    {
+      int index = startIndex + firstSize - 1;
+      for( int i = 0; i < size; i++ )
+      {
+        half[ i ] = src[ index ];
+        index -= 2;
+      }
+    }
+    byte[] hash = CryptUtil.sha256bytes( Arrays.copyOfRange( half, 0, size ) );
+    for( int i = 0; i < 32; i++ )
+    {
+      dst[ 2 * i ] = hash[ i ];
+    }
+    if( size > 0 )
+    {
+      int index = startIndex + firstSize - 2;
+      for( int i = 0; i < size; i++ )
+      {
+        half[ i ] = src[ index ];
+        index -= 2;
+      }
+    }
+    hash = CryptUtil.sha256bytes( Arrays.copyOfRange( half, 0, size ) );
+    for( int i = 0; i < 32; i++ )
+    {
+      dst[ 2 * i + 1 ] = hash[ i ];
+    }
+    return dst;
   }
 }
