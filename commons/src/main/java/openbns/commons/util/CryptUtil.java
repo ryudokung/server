@@ -62,4 +62,22 @@ public class CryptUtil
   {
     return DatatypeConverter.parseBase64Binary( data );
   }
+
+  public static byte[] mergeArrays( byte[]... arrays )
+  {
+    int size = 0;
+
+    for( byte[] a : arrays )
+      size += a.length;
+
+    byte[] result = new byte[ size ];
+
+    int lastPos = 0;
+    for( byte[] a : arrays )
+    {
+      System.arraycopy( a, 0, result, lastPos, a.length );
+      lastPos += a.length;
+    }
+    return result;
+  }
 }

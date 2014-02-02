@@ -2,7 +2,10 @@ package openbns.loginserver.net.client.impl;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
-import openbns.commons.net.codec.sts.*;
+import openbns.commons.net.codec.sts.DefaultLastStsContent;
+import openbns.commons.net.codec.sts.DefaultStsResponse;
+import openbns.commons.net.codec.sts.StsHeaders;
+import openbns.commons.net.codec.sts.StsResponseStatus;
 import openbns.commons.util.CryptUtil;
 import openbns.commons.xml.StsXStream;
 import openbns.loginserver.dao.AccountDAO;
@@ -12,8 +15,6 @@ import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.LoginStartDTO;
 import openbns.loginserver.net.server.dto.ReplyErrorDTO;
 import openbns.loginserver.net.server.dto.ReplyKeyData;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -27,7 +28,6 @@ import java.nio.ByteOrder;
  */
 public class RequestLoginStart extends AbstractRequestPacket
 {
-  private static final Log log = LogFactory.getLog( RequestLoginStart.class );
   private LoginStartDTO loginStart;
 
   @Override
@@ -37,7 +37,6 @@ public class RequestLoginStart extends AbstractRequestPacket
     stream.processAnnotations( LoginStartDTO.class );
 
     loginStart = (LoginStartDTO) stream.fromXML( new ByteBufInputStream( buf ) );
-    log.debug( "Read from client object: " + loginStart );
   }
 
   @Override

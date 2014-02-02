@@ -6,8 +6,6 @@ import openbns.commons.net.codec.sts.StsResponseStatus;
 import openbns.commons.xml.StsXStream;
 import openbns.loginserver.net.client.AbstractRequestPacket;
 import openbns.loginserver.net.client.dto.ConnectDTO;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +15,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RequestConnect extends AbstractRequestPacket
 {
-  private static final Log log = LogFactory.getLog( RequestConnect.class );
-
   @Override
   public void read()
   {
@@ -26,7 +22,6 @@ public class RequestConnect extends AbstractRequestPacket
     stream.processAnnotations( ConnectDTO.class );
 
     ConnectDTO connectDTO = (ConnectDTO) stream.fromXML( new ByteBufInputStream( buf ) );
-    log.debug( "Read from client object: " + connectDTO );
   }
 
   @Override

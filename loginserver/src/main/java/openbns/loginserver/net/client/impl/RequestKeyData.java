@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +28,6 @@ public class RequestKeyData extends AbstractRequestPacket
   {
     StsXStream stream = new StsXStream();
     stream.processAnnotations( KeyDataDTO.class );
-
     keyData = (KeyDataDTO) stream.fromXML( new ByteBufInputStream( buf ) );
     log.debug( "Read from client object: " + keyData );
   }
@@ -40,14 +40,25 @@ public class RequestKeyData extends AbstractRequestPacket
     bf.order( ByteOrder.LITTLE_ENDIAN );
 
     int size1 = bf.getInt();
-    byte[] buffer1 = new byte[size1];
-    bf.get( buffer1 );
+    byte[] exchangeKey = new byte[ size1 ];
+    bf.get( exchangeKey );
+
+    try
+    {
+      byte[][] result = handler.getSession().generateServerKey( exchangeKey );
+
+      System.out.println( Arrays.deepToString( result ) );
+    }
+    catch( Exception e )
+    {
+      e.printStackTrace();
+    }
 
     int size2 = bf.getInt();
-    byte[] buffer2 = new byte[size2];
-    bf.get( buffer2 );
+    byte[] checkHash = new byte[ size2 ];
+    bf.get( checkHash );
 
-    System.out.println( new String( buffer1 ) );
-    System.out.println( new String( buffer2 ) );
+    System.out.println( new String( exchangeKey ) );
+    System.out.println( new String( checkHash ) );
   }
 }

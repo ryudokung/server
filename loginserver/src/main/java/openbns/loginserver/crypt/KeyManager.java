@@ -135,4 +135,50 @@ public class KeyManager
     }
     return dst;
   }
+
+  public byte[] generate256BytesKey( byte[] src )
+  {
+    int v7 = 1;
+    byte[] res = new byte[ 256 ];
+    for( int i = 0; i < 256; i++ )
+      res[ i ] = (byte) i;
+    int v6 = 0;
+    int counter = 0;
+    for( int i = 64; i > 0; i-- )
+    {
+      int v9 = (v6 + src[ counter ] + res[ v7 - 1 ]) & 0xFF;
+      int v10 = res[ v7 - 1 ];
+      res[ v7 - 1 ] = res[ v9 ];
+      int v8 = counter + 1;
+      res[ v9 ] = (byte) v10;
+      if( v8 == src.length )
+        v8 = 0;
+      int v13 = v9 + src[ v8 ];
+      int v11 = v8 + 1;
+      int v14 = v13 + res[ v7 ];
+      v13 = res[ v7 ];
+      int v12 = (byte) v14;
+      res[ v7 ] = res[ v12 ];
+      res[ v12 ] = (byte) v13;
+      if( v11 == src.length )
+        v11 = 0;
+      int v16 = (v12 + src[ v11 ] + res[ v7 + 1 ]) & 0xFF;
+      int v17 = res[ v7 + 1 ];
+      res[ v7 + 1 ] = res[ v16 ];
+      int v15 = v11 + 1;
+      res[ v16 ] = (byte) v17;
+      if( v15 == src.length )
+        v15 = 0;
+      int v18 = v16 + src[ v15 ];
+      int v19 = res[ v7 + 2 ];
+      v6 = (v18 + res[ v7 + 2 ]) & 0xFF;
+      counter = v15 + 1;
+      res[ v7 + 2 ] = res[ v6 ];
+      res[ v6 ] = (byte) v19;
+      if( counter == src.length )
+        counter = 0;
+      v7 += 4;
+    }
+    return res;
+  }
 }
