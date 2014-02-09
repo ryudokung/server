@@ -43,9 +43,23 @@ public class RequestKeyData extends AbstractRequestPacket
     byte[] exchangeKey = new byte[ size1 ];
     bf.get( exchangeKey );
 
+    int size2 = bf.getInt();
+    byte[] checkHash = new byte[ size2 ];
+    bf.get( checkHash );
+
     try
     {
       byte[][] result = handler.getSession().generateServerKey( exchangeKey );
+
+      String authentication = CryptUtil.base64( result[ 0 ] ) + "," + CryptUtil.base64( result[ 1 ] );
+      String[] args = authentication.split( "," );
+
+      String a1 = new String( checkHash );
+
+      if( a1.equals( args[ 0 ] ) )
+      {
+        System.out.println( "Aaaaaaaaaagdg" );
+      }
 
       System.out.println( Arrays.deepToString( result ) );
     }
@@ -53,10 +67,6 @@ public class RequestKeyData extends AbstractRequestPacket
     {
       e.printStackTrace();
     }
-
-    int size2 = bf.getInt();
-    byte[] checkHash = new byte[ size2 ];
-    bf.get( checkHash );
 
     System.out.println( new String( exchangeKey ) );
     System.out.println( new String( checkHash ) );
