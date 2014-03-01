@@ -6,6 +6,7 @@ package openbns.commons.geometry;
  */
 public class Point2D
 {
+  public static final Point2D[] EMPTY_ARRAY = new Point2D[ 0 ];
   public int x;
   public int y;
 
