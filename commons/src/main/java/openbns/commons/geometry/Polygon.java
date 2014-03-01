@@ -1,6 +1,6 @@
 package openbns.commons.geometry;
 
-import openbns.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Created by: Eugene Chipachenko
